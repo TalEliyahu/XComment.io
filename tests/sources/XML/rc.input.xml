@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+
+<nutrition>
+
+    
+        
+        
+        
+        
+        
+        
+        
+    
+
+    <food>
+        <name>Avocado Dip</name>
+        <mfr>Sunnydale</mfr>
+        <serving units="g">29</serving>
+        
+        
+        
+        
+        
+        <carb>2</carb>
+        <fiber>0</fiber>
+        <protein>1</protein>
+        <vitamins>
+            <a>0</a>
+            <c>0</c>
+        </vitamins>
+        <minerals>
+            <ca>0</ca>
+            <fe>0</fe>
+        </minerals>
+    </food>
+
+    <food>
+        <name>Bagels, New York Style</name>
+        <mfr>Thompson</mfr>
+        <serving units="g">104</serving>
+        <calories total="300" fat="35"/>
+        <total-fat>4</total-fat>
+        <saturated-fat>1</saturated-fat>
+        <cholesterol>0</cholesterol>
+        
+        <carb>54</carb>
+        <fiber>3</fiber>
+        <protein>11</protein>
+        <vitamins>
+            <a>0</a>
+            <c>0</c>
+        </vitamins>
+        <minerals>
+            <ca>8</ca>
+            <fe>20</fe>
+        </minerals>
+    </food>
+
+    <food>
+        <name>Beef Frankfurter, Quarter Pound</name>
+        <mfr>Armitage</mfr>
+        
+        
+        
+        <saturated-fat>15</saturated-fat>
+        <cholesterol>65</cholesterol>
+        <sodium></sodium>
+        <carb>8</carb>
+        <fiber>0</fiber>
+        <protein>13</protein>
+        <vitamins>
+            <a>0</a>
+            <c>2</c>
+        </vitamins>
+        <minerals>
+            <ca>1</ca>
+            <fe>6</fe>
+        </minerals>
+    </food>
+
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+            
+            
+        
+        
+            
+            
+        
+    
+
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+            
+            
+        
+        
+            
+            
+        
+    
+
+    <food>
+        <name>Eggs</name>
+        <mfr>Goodpath</mfr>
+        <serving units="g">50</serving>
+        <calories total="70" fat="40"/>
+        <total-fat>4.5</total-fat>
+        <saturated-fat>1.5</saturated-fat>
+        <cholesterol>215</cholesterol>
+        <sodium>65</sodium>
+        <carb>1</carb>
+        <fiber>0</fiber>
+        <protein>6</protein>
+        <vitamins>
+            <a>6</a>
+            <c>0</c>
+        </vitamins>
+        <minerals>
+            <ca>2</ca>
+            <fe>4</fe>
+        </minerals>
+    </food>
+
+    <food>
+        <name>Hazelnut Spread</name>
+        <mfr>Ferreira</mfr>
+        <serving units="tbsp">2</serving>
+        <calories total="200" fat="90"/>
+        <total-fat>10</total-fat>
+        <saturated-fat>2</saturated-fat>
+        <cholesterol>0</cholesterol>
+        <sodium>20</sodium>
+        <carb>23</carb>
+        <fiber>2</fiber>
+        <protein>3</protein>
+        <vitamins>
+            <a>0</a>
+            <c>0</c>
+        </vitamins>
+        <minerals>
+            <ca>6</ca>
+            <fe>4</fe>
+        </minerals>
+    </food>
+
+    <food>
+        <name>Potato Chips</name>
+        <mfr>Lees</mfr>
+        <serving units="g">28</serving>
+        <calories total="150" fat="90"/>
+        <total-fat>10</total-fat>
+        <saturated-fat>3</saturated-fat>
+        <cholesterol>0</cholesterol>
+        <sodium>180</sodium>
+        <carb>15</carb>
+        <fiber>1</fiber>
+        <protein>2</protein>
+        <vitamins>
+            <a>0</a>
+            <c>10</c>
+        </vitamins>
+        <minerals>
+            <ca>0</ca>
+            <fe>0</fe>
+        </minerals>
+    </food>
+    
+    <food>
+        <name>Soy Patties, Grilled</name>
+        <mfr>Gardenproducts</mfr>
+        <serving units="g">96</serving>
+        <calories total="160" fat="45"/>
+        <total-fat>5</total-fat>
+        <saturated-fat>0</saturated-fat>
+        <cholesterol>0</cholesterol>
+        <sodium>420</sodium>
+        <carb>10</carb>
+        <fiber>4</fiber>
+        <protein>9</protein>
+        <vitamins>
+            <a>0</a>
+            
+        </vitamins>
+        <minerals>
+            
+            <fe>0</fe>
+        </minerals>
+    </food>
+
+    <food>
+        <name>Truffles, Dark Chocolate</name>
+        <mfr>Lyndon's</mfr>
+        <serving units="g">39</serving>
+        <calories total="220" fat="170"/>
+        <total-fat>19</total-fat>
+        <saturated-fat>14</saturated-fat>
+        <cholesterol>25</cholesterol>
+        <sodium>10</sodium>
+        <carb>16</carb>
+        <fiber>1</fiber>
+        <protein>1</protein>
+        
+            
+            
+        
+        
+            
+            
+        
+    </food>
+
+</nutrition>
