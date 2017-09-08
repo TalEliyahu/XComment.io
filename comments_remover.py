@@ -147,13 +147,6 @@ LANGUAGE_COMMENTS_MAP: Dict[Language, Tuple[Sequence[str], Sequence[Tuple[str, s
 def remove_comments_from_string(source: str,
                                 language: Language,
                                 orphan_multiline_comments: bool = True) -> str:
-    """
-
-    :param source:
-    :param language:
-    :param orphan_multiline_comments: a workaround accounting for nested multiline comments.
-    :return:
-    """
     pattern = r''
 
     quotations = {SINGLE_QUOTATION, DOUBLE_QUOTATION}
