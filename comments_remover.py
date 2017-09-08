@@ -12,10 +12,10 @@ from python_humble_utils.commands import read_file, create_or_update_file, extra
 @unique
 class Language(Enum):
     @classmethod
-    def from_string(cls, name: str) -> 'Language':
-        ignore_case = True
+    def from_string(cls, name: str, ignore_case: bool = True) -> 'Language':
         if ignore_case:
             name = name.lower()
+        # todo: refactor
         return Language(next(v for n, v in vars(Language).items() if n.lower() == name))
 
     PHP = auto()
