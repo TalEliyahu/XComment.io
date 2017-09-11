@@ -178,7 +178,7 @@ def remove_comments_from_string(source: str,
     return output
 
 
-DEFAULT_OUTPUT_FILE_PREFIX = "rc."
+DEFAULT_OUTPUT_FILE_PREFIX: str = "rc."
 
 
 def remove_comments_from_file(input_file_path: str,
