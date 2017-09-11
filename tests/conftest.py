@@ -2,7 +2,7 @@ from os import listdir
 from os.path import realpath, dirname, join
 from typing import Tuple
 
-from ..comments_remover import Language
+from comments_remover import Language
 
 TESTS_DIR_PATH: str = realpath(dirname(realpath(__file__)))
 SOURCES_DIR_PATH: str = join(TESTS_DIR_PATH, 'sources')

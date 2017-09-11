@@ -4,7 +4,7 @@ from pytest import mark
 from python_humble_utils.commands import read_file, extract_file_name_with_extension
 
 from .conftest import get_source_file_paths
-from ..comments_remover import Language, remove_comments_from_string, remove_comments_from_file, \
+from comments_remover import Language, remove_comments_from_string, remove_comments_from_file, \
     DEFAULT_OUTPUT_FILE_PREFIX
 
 
