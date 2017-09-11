@@ -14,12 +14,8 @@ class Language(Enum):
     @classmethod
     def get_from_string(cls, name: str,
                         ignore_case: bool = True) -> 'Language':
-        if ignore_case:
-            name = name.lower()
         for n, v in vars(Language).items():
-            if ignore_case:
-                n = n.lower()
-            if n == name:
+            if n == name or (ignore_case and n.lower() == name.lower()):
                 return Language(v)
 
     PHP = auto()
