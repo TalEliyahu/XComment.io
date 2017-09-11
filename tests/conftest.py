@@ -4,7 +4,7 @@ from typing import Tuple
 
 from comments_remover import Language
 
-TESTS_DIR_PATH: str = realpath(dirname(realpath(__file__)))
+TESTS_DIR_PATH: str = dirname(realpath(__file__))
 SOURCES_DIR_PATH: str = join(TESTS_DIR_PATH, 'sources')
 INPUT_SOURCE_FILE_PREFIX = 'input'
 OUTPUT_SOURCE_FILE_PREFIX = 'output'
