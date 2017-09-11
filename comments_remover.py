@@ -12,11 +12,15 @@ from python_humble_utils.commands import read_file, create_or_update_file, extra
 @unique
 class Language(Enum):
     @classmethod
-    def from_string(cls, name: str, ignore_case: bool = True) -> 'Language':
+    def get_from_string(cls, name: str,
+                        ignore_case: bool = True) -> 'Language':
         if ignore_case:
             name = name.lower()
-        # todo: refactor
-        return Language(next(v for n, v in vars(Language).items() if n.lower() == name))
+        for n, v in vars(Language).items():
+            if ignore_case:
+                n = n.lower()
+            if n == name:
+                return Language(v)
 
     PHP = auto()
     Python = auto()
@@ -220,7 +224,7 @@ def main():
     arguments = argument_parser.parse_args()
 
     remove_comments_from_file(realpath(arguments.input_file_path),
-                              Language.from_string(arguments.language),
+                              Language.get_from_string(arguments.language),
                               output_file_dir_path=arguments.output_file_dir_path,
                               output_file_prefix=arguments.output_file_prefix)
 

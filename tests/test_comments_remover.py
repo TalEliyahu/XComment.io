@@ -1,5 +1,8 @@
+import re
 from os.path import join, dirname
 
+from hypothesis import given
+from hypothesis import strategies as st
 from pytest import mark
 from python_humble_utils.commands import read_file, extract_file_name_with_extension
 
@@ -55,3 +58,18 @@ def test_when_removing_comments_from_file_given_output_file_dir_path_should_succ
     expected_output_file_contents = strip_spaces_and_linebreaks(read_file(output_file_path))
 
     assert actual_output_file_contents == expected_output_file_contents
+
+
+@mark.parametrize('language', Language)
+@given(data=st.data())
+def test_when_getting_language_from_string_given_valid_arguments_should_succeed(language: Language,
+                                                                                data):
+    assert Language.get_from_string(language.name, ignore_case=False) is language
+
+    mixed_case_language_name_pattern = r'\A'
+    for char in language.name:
+        mixed_case_language_name_pattern += r'[{}]'.format(char)
+    mixed_case_language_name_pattern += r'\Z'
+    mixed_case_language_name_regex = re.compile(mixed_case_language_name_pattern, re.IGNORECASE)
+    mixed_case_language_name = data.draw(st.from_regex(mixed_case_language_name_regex))
+    assert Language.get_from_string(mixed_case_language_name, ignore_case=True) is language
