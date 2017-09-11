@@ -1,5 +1,7 @@
 import re
+from os import makedirs
 from os.path import join, dirname
+from shutil import copy2
 
 from hypothesis import given
 from hypothesis import strategies as st
@@ -34,10 +36,19 @@ def test_when_removing_comments_from_file_given_output_file_dir_path_should_succ
                                                                                     provide_output_file_dir_path: bool):
     input_file_path, output_file_path = get_input_and_output_source_file_paths(language)
 
+    tmp_language_sources_dir_path = join(tmpdir_factory.getbasetemp(),
+                                         'sources',
+                                         language.name)
+    makedirs(tmp_language_sources_dir_path, exist_ok=True)
     if provide_output_file_dir_path:
-        output_file_dir_path = str(tmpdir_factory.mktemp(language.name))
+        output_file_dir_path = tmp_language_sources_dir_path
     else:
         output_file_dir_path = None
+        # Prevent cluttering project dir with temporary test-only files.
+        new_input_file_path = join(tmp_language_sources_dir_path,
+                                   extract_file_name_with_extension(input_file_path))
+        copy2(input_file_path, new_input_file_path)
+        input_file_path = new_input_file_path
 
     output_file_prefix = DEFAULT_OUTPUT_FILE_PREFIX
 
