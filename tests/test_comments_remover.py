@@ -3,7 +3,7 @@ from os.path import join, dirname
 from pytest import mark
 from python_humble_utils.commands import read_file, extract_file_name_with_extension
 
-from . import get_source_file_paths
+from . import get_input_and_output_source_file_paths
 from comments_remover import Language, remove_comments_from_string, remove_comments_from_file, \
     DEFAULT_OUTPUT_FILE_PREFIX
 
@@ -14,7 +14,7 @@ def strip_spaces_and_linebreaks(s: str) -> str:
 
 @mark.parametrize('language', Language)
 def test_when_removing_comments_from_string_given_valid_arguments_should_succeed(language: Language):
-    input_file_path, output_file_path = get_source_file_paths(language)
+    input_file_path, output_file_path = get_input_and_output_source_file_paths(language)
 
     actual_output = remove_comments_from_string(read_file(input_file_path), language)
 
@@ -29,7 +29,7 @@ def test_when_removing_comments_from_string_given_valid_arguments_should_succeed
 def test_when_removing_comments_from_file_given_output_file_dir_path_should_succeed(tmpdir_factory,
                                                                                     language: Language,
                                                                                     provide_output_file_dir_path: bool):
-    input_file_path, output_file_path = get_source_file_paths(language)
+    input_file_path, output_file_path = get_input_and_output_source_file_paths(language)
 
     if provide_output_file_dir_path:
         output_file_dir_path = str(tmpdir_factory.mktemp(language.name))
