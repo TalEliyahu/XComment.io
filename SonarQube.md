@@ -15,37 +15,37 @@ GitHub account which you will able to link with sonarcloud.
 
 Go to
 https://sonarcloud.io/sessions/new
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30277114-6a8bc878-9739-11e7-9ff1-2d1f2424638d.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324723-9b113576-97f4-11e7-9947-871d4adae23b.JPG)
 
 and authorize with your GitHub account.
-![SonarCloud page after login](https://user-images.githubusercontent.com/26525441/30277115-6a8bec18-9739-11e7-8cdb-5a02a4b75397.JPG)
+![SonarCloud page after login](https://user-images.githubusercontent.com/26525441/30324721-9b0a0710-97f4-11e7-802d-09d919bbb0a6.JPG)
 
 Prepare your organization - "My Account > Organizations".
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30279315-6e85c4fa-973f-11e7-84fa-b224a866edc5.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324720-9b092a48-97f4-11e7-8470-9f26e8b901a4.JPG)
 
 Generate an authentication token - "My Account > Security".
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30279316-6e9377d0-973f-11e7-986d-19d5f18bc925.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324724-9b27f3a6-97f4-11e7-8142-221c6ae46eeb.JPG)
 
 Download sonar scanner for your operating system (where project files are located) from
 https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner
 ```
 wget https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.3.778-linux.zip
 ```
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30279317-6e945560-973f-11e7-9480-cc70dfb606d2.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324726-9b297a5a-97f4-11e7-9eed-afe56e4b421d.JPG)
 
 Unzip it in some directory where your user has permissions to use it.
 ```
 ls
 unzip sonar-scanner-cli-3.0.3.778-linux.zip
 ```
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30279319-6e968af6-973f-11e7-9d39-6771c1725808.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324725-9b297a64-97f4-11e7-93ae-1922b82237b7.JPG)
 
 Create "sonar-project.properties" file in your project's root and fill it as follows:
 ```
 cd myproject
 vi sonar-project.properties
 ```
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30279321-6e9d8e0a-973f-11e7-9689-8d646d75867a.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324728-9b2d040e-97f4-11e7-8d65-3a5c8b3941e2.JPG)
 ```
 sonar.projectKey=your_project_key_that_must_be_unique
 sonar.sources=.
@@ -53,7 +53,7 @@ sonar.host.url=https://sonarcloud.io
 sonar.organization=your_organization_key
 sonar.login=authenticated_token
 ```
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30279318-6e957698-973f-11e7-8f73-cc35cad60068.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324727-9b2b10d6-97f4-11e7-81eb-8c8226c6ca20.JPG)
 
 where:
   - "sonar.projectKey" is friendly name to recognize your project.
@@ -70,7 +70,7 @@ cd sonar-scanner-3.0.3.778-linux/
 ls
 pwd
 ```
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30279322-6eae47fe-973f-11e7-8d8e-3c36aa151f8b.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324729-9b318312-97f4-11e7-9c89-eff443cc1f50.JPG)
 
 Easiest way is to use absolute path to it from your project's root (where sonar-project.properties file that we created earlier is located). Add "-X" or "--debug" at the end if you need more detailed (DEBUG) output.
 ```
@@ -78,13 +78,13 @@ ls
 cd myproject
 /home/user/sonar-scanner-3.0.3.778-linux/bin/sonar-scanner -X
 ```
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30279324-6eb49d02-973f-11e7-820f-8c47992ba9fb.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324718-9b0776ee-97f4-11e7-9019-75354f2430e8.JPG)
 
 
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30279323-6eb33c5a-973f-11e7-8041-8fde0216dc35.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324719-9b08aea6-97f4-11e7-90e9-b5e51883ae90.JPG)
 
 You can find more information about scanner on it's documentation page:
 https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner
 
 Now you can go to https://sonarcloud.io/ and find analysis result of your project at "Project" tab or via link that was given inside output of your scan.
-![SonarCloud login](https://user-images.githubusercontent.com/26525441/30282315-814b5548-9747-11e7-9cc3-6b4498fa9cdb.JPG)
+![SonarCloud login](https://user-images.githubusercontent.com/26525441/30324722-9b0c0150-97f4-11e7-91ea-38b7f510b86c.JPG)
