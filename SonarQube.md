@@ -1,7 +1,7 @@
 
 ## POC
 
-Our goal is get Jenkins with plugin that we developed that will remove all comments across the code and address all issues regarding comments that will come from SonarQube report automatically. 
+Jenkins plugin that we developed will remove all the comments across the code and address all issues regarding comments that will come from SonarQube report automatically. Once it's done the code will deployed clean from comments and all issues releated to comments. 
 
 First we going to Install SonarQube and then Integrate our project in GitHub to see its vulnerabilities, smelly code and bugs.
 
