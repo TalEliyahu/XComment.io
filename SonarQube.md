@@ -3,7 +3,7 @@
 
 Our goal is get Jenkins with plugin that we developed that will remove all comments across the code and address all issues regarding comments that will come from SonarQube report automatically. 
 
-## First we going to Install SonarQube and then Integrate our project in GitHub to see its vulnerabilities, smelly code and bugs.
+First we going to Install SonarQube and then Integrate our project in GitHub to see its vulnerabilities, smelly code and bugs.
 
 
 ## Getting Started
