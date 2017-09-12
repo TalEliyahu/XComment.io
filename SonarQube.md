@@ -1,4 +1,4 @@
-# Name of your Project goes here
+# SonarQube Installation and GitHub Integration
 
 One Paragraph of project description goes here
 
