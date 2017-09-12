@@ -13,7 +13,7 @@ from tests import get_input_and_output_source_file_paths, strip_spaces_and_lineb
 
 
 @mark.parametrize('language', Language)
-def test_when_removing_comments_from_string_given_valid_arguments_should_succeed(language: Language):
+def test_remove_comments_from_string(language: Language):
     input_file_path, output_file_path = get_input_and_output_source_file_paths(language)
 
     actual_output = remove_comments_from_string(_read_file(input_file_path), language)
@@ -26,9 +26,9 @@ def test_when_removing_comments_from_string_given_valid_arguments_should_succeed
 
 @mark.parametrize('language', Language)
 @mark.parametrize('provide_output_file_dir_path', [True, False])
-def test_when_removing_comments_from_file_given_output_file_dir_path_should_succeed(tmpdir_factory,
-                                                                                    language: Language,
-                                                                                    provide_output_file_dir_path: bool):
+def test_remove_comments_from_file(tmpdir_factory,
+                                   language: Language,
+                                   provide_output_file_dir_path: bool):
     input_file_path, output_file_path = get_input_and_output_source_file_paths(language)
 
     tmp_language_sources_dir_path = join(tmpdir_factory.getbasetemp(),
@@ -68,8 +68,8 @@ def test_when_removing_comments_from_file_given_output_file_dir_path_should_succ
 
 @mark.parametrize('language', Language)
 @given(data=st.data())
-def test_when_getting_language_from_string_given_valid_arguments_should_succeed(language: Language,
-                                                                                data):
+def test_get_language_from_string(language: Language,
+                                      data):
     assert Language.get_from_string(language.name, ignore_case=False) is language
 
     mixed_case_language_name_pattern = r'\A'
