@@ -69,7 +69,7 @@ def test_remove_comments_from_file(tmpdir_factory,
 @mark.parametrize('language', Language)
 @given(data=st.data())
 def test_get_language_from_string(language: Language,
-                                      data):
+                                  data):
     assert Language.get_from_string(language.name, ignore_case=False) is language
 
     mixed_case_language_name_pattern = r'\A'
