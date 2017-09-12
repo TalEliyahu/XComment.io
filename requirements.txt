@@ -1,1 +1,1 @@
--r ./requirements/local.txt
+python-humble-utils==1.0.2
