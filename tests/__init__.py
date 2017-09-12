@@ -20,3 +20,7 @@ def get_input_and_output_source_file_paths(language: Language) -> Tuple[str, str
             output_file_path = join(language_sources_dir_path, file_name)
         if input_file_path and output_file_path:
             return input_file_path, output_file_path
+
+
+def strip_spaces_and_linebreaks(s: str) -> str:
+    return ''.join(s.split())

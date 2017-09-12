@@ -10,11 +10,7 @@ from python_humble_utils.commands import read_file, extract_file_name_with_exten
 
 from comments_remover import Language, remove_comments_from_string, remove_comments_from_file, \
     DEFAULT_OUTPUT_FILE_PREFIX
-from . import get_input_and_output_source_file_paths
-
-
-def strip_spaces_and_linebreaks(s: str) -> str:
-    return ''.join(s.split())
+from tests import get_input_and_output_source_file_paths, strip_spaces_and_linebreaks
 
 
 @mark.parametrize('language', Language)
