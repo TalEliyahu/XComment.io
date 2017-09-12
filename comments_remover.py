@@ -1,12 +1,10 @@
+import os
 import re
 from argparse import ArgumentParser
 from enum import Enum, unique, auto
 from itertools import chain
-from os.path import join, dirname
-from os.path import realpath
+from os.path import join, dirname, realpath, basename
 from typing import Optional, Dict, Sequence, Tuple
-
-from python_humble_utils.commands import read_file, create_or_update_file, extract_file_name_with_extension
 
 
 @unique
@@ -185,17 +183,48 @@ def remove_comments_from_file(input_file_path: str,
                               language: Language,
                               output_file_dir_path: Optional[str] = None,
                               output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX) -> None:
-    input_file_contents = read_file(input_file_path)
+    input_file_contents = _read_file(input_file_path)
 
     output_file_contents = remove_comments_from_string(input_file_contents, language)
 
-    input_file_name = extract_file_name_with_extension(input_file_path)
+    input_file_name = _extract_file_name_with_extension(input_file_path)
 
     if output_file_dir_path is None:
         output_file_dir_path = dirname(input_file_path)
     output_file_path = join(output_file_dir_path,
                             '{}{}'.format(output_file_prefix, input_file_name))
-    create_or_update_file(output_file_path, output_file_contents)
+    _create_or_update_file(output_file_path, output_file_contents)
+
+
+def _read_file(file_path: str,
+               as_single_line: bool = False) -> str:
+    """Source:
+    https://github.com/webyneter/python-humble-utils
+    """
+    with open(file_path, 'r') as file:
+        lines = []
+        for line in file.readlines():
+            if as_single_line:
+                line = line.replace(os.linesep, '')
+            lines.append(line)
+        return ''.join(lines)
+
+
+def _create_or_update_file(file_path: str,
+                           file_content: str = '',
+                           file_content_encoding: str = 'utf-8') -> None:
+    """Source:
+    https://github.com/webyneter/python-humble-utils
+    """
+    with open(file_path, 'wb+') as file:
+        file.write(file_content.encode(file_content_encoding))
+
+
+def _extract_file_name_with_extension(file_path: str) -> str:
+    """Source:
+    https://github.com/webyneter/python-humble-utils
+    """
+    return basename(file_path)
 
 
 def main():
