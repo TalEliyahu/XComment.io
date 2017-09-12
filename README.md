@@ -10,7 +10,6 @@
 Tested with the following configuration:
 
 * Ubuntu 17.04;
-* PyCharm 2017.2;
 * Python 3.6.x.
 
 *Note: the below occurences of *`./`* refer to the project root unless explicitly stated otherwise*. 
