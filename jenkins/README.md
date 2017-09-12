@@ -26,37 +26,37 @@ To install manually on local Jenkins, copy it to $JENKINS_HOME/plugins directory
 
 Go to Manage Jenkins -> Configure System to access them
 
-![settings](images/1.png "Settings")
+![settings](https://user-images.githubusercontent.com/9072987/30342487-630f98ce-97fa-11e7-8076-e7c02ad494f2.png "Settings")
 
-![settings](images/2.png "Settings")
+![settings](https://user-images.githubusercontent.com/9072987/30342530-814deb06-97fa-11e7-996f-a5020d6870aa.png "Settings")
 
-![settings](images/3.png "Settings")
+![settings](https://user-images.githubusercontent.com/9072987/30342531-816886e6-97fa-11e7-890d-d3a2837ee6f3.png "Settings")
 
 There is help section to provide examples:
 
-![settings](images/4.png "Settings")
+![settings](https://user-images.githubusercontent.com/9072987/30342532-8174449a-97fa-11e7-85a9-ec6d1f5239bd.png "Settings")
 
 
 # Usage
 
 The plugin can be used wherever build steps can be defined, e.g. Freestyle project
 
-![job](images/5.png "Job")
+![job](https://user-images.githubusercontent.com/9072987/30342535-8179a28c-97fa-11e7-8540-25d04aad24a9.png "Job")
 
 Adding build step:
 
-![build](images/6.png "Build")
+![build](https://user-images.githubusercontent.com/9072987/30342534-817803f0-97fa-11e7-98a0-da4f43bbcf30.png "Build")
 
-![build step](images/7.png "Build step")
+![build step](https://user-images.githubusercontent.com/9072987/30342536-817a7f86-97fa-11e7-99a5-37e9f255f0b6.png "Build step")
 
 This part also has "help" section:
 
-![build step help](images/8.png "Build step help")
+![build step help](https://user-images.githubusercontent.com/9072987/30342537-81878802-97fa-11e7-8c8c-b64f20f2fb3e.png "Build step help")
 
 ##### Example of build output and result:
 
-![build output](images/9.png "Build output")
+![build output](https://user-images.githubusercontent.com/9072987/30342538-81903aec-97fa-11e7-92dd-e5ad839d2a4c.png "Build output")
 
-![build result](images/10.png "Build result")
+![build result](https://user-images.githubusercontent.com/9072987/30342539-819254c6-97fa-11e7-8a65-998198cc2657.png "Build result")
 
-![build result](images/11.png "Build result")
+![build result](https://user-images.githubusercontent.com/9072987/30342540-81930aa6-97fa-11e7-85fa-7f934169025b.png "Build result")
