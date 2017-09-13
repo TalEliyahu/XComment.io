@@ -60,3 +60,14 @@ This part also has "help" section:
 ![build result](https://user-images.githubusercontent.com/9072987/30342539-819254c6-97fa-11e7-8a65-998198cc2657.png "Build result")
 
 ![build result](https://user-images.githubusercontent.com/9072987/30342540-81930aa6-97fa-11e7-85fa-7f934169025b.png "Build result")
+
+### Using as a shell/batch command script
+Alternatively, user can create plain script build step (`Execute shell` or `Execute Windows batch command`) and run `comments_remover.py` Python script
+manually.
+
+![shell step](https://user-images.githubusercontent.com/9072987/30379725-bf93011a-9897-11e7-992a-874f7880d5c5.jpg "Run shell build step")
+
+Comments Remover script is unpacked to JENKINS_HOME directory (which is available in script as environmental variable)
+
+![shell step output](https://user-images.githubusercontent.com/9072987/30379735-c522fc02-9897-11e7-9286-c3363f1c4a2b.jpg "Execute shell build step output")
+
