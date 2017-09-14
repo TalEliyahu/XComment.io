@@ -12,13 +12,14 @@ Tested with the following configuration:
 ## Table of Contents
 
 * [Getting Up-and-Running Locally](#getting-up-and-running-locally)
-* []()
-
+    * [Developing on Ubuntu](#developing-on-ubuntu)
+    * [Usage](#usage)
+* [Tips](#tips)
 
 ## Getting Up-and-Running Locally<a name="getting-up-and-running-locally"></a>
 
 
-### Developing on Ubuntu
+### Developing on Ubuntu<a name="developing-on-ubuntu"></a>
 
 1. Enter the shell.
 1. Install `pyenv` via [pyenv-installer](https://github.com/pyenv/pyenv-installer):
@@ -100,7 +101,7 @@ pytest --cov ./
 You should be good to go now.
 
 
-### Usage
+### Usage<a name="usage"></a>
 
 Use the project's CLI to interact with the script.
 
@@ -118,7 +119,7 @@ $ python comments_remover.py
 
 
 
-## Tips
+## Tips<a name="tips"></a>
 
 If you're not using [PyCharm](https://www.jetbrains.com/pycharm/) yet, make sure to at least consider this as an option. 
 Also check out [JetBrains Toolbox](https://www.jetbrains.com/toolbox/), a single tool to rule them all (the JetBrains products). 
