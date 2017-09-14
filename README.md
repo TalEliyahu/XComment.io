@@ -5,7 +5,7 @@
 ## Table of Contents
 
 * [Getting Up-and-Running Locally](#getting-up-and-running-locally)
-    * [Developing on Ubuntu](#developing-on-ubuntu)
+    * [Setting Things Up on Ubuntu](#setting-things-up-on-ubuntu)
     * [Usage](#usage)
 * [Tips](#tips)
 
@@ -21,7 +21,7 @@ Tested with the following configuration:
 *Note: the below occurences of `./` refer to the project root unless explicitly stated otherwise*.
 
 
-### Developing on Ubuntu<a name="developing-on-ubuntu"></a>
+### Setting Things Up on Ubuntu<a name="setting-things-up-on-ubuntu"></a>
 
 1. Enter the shell.
 1. Install `pyenv` via [pyenv-installer](https://github.com/pyenv/pyenv-installer):
