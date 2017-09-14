@@ -9,7 +9,12 @@ Tested with the following configuration:
 
 
 
-## Getting Up-and-Running Locally
+## Table of Contents
+
+* [Getting Up-and-Running Locally](#getting-up-and-running-locally)
+
+
+## Getting Up-and-Running Locally<a name=""></a>
 
 
 ### Developing on Ubuntu
