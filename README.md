@@ -15,7 +15,7 @@
 
 Tested with the following configuration:
 
-* Ubuntu 17;
+* Ubuntu 17.
 * Python 3.6.
 
 *Note: the below occurences of `./` refer to the project root unless explicitly stated otherwise*.
