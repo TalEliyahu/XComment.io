@@ -1,18 +1,27 @@
 # comments_remover
 
+
+
+## Table of Contents
+
+* [Getting Up-and-Running Locally](#getting-up-and-running-locally)
+    * [Setting Things Up on Ubuntu](#setting-things-up-on-ubuntu)
+    * [Usage](#usage)
+* [Tips](#tips)
+
+
+
+## Getting Up-and-Running Locally<a name="getting-up-and-running-locally"></a>
+
 Tested with the following configuration:
 
-* Ubuntu 17;
+* Ubuntu 17.
 * Python 3.6.
 
-*Note: the below occurences of *`./`* refer to the project root unless explicitly stated otherwise*.
+*Note: the below occurences of `./` refer to the project root unless explicitly stated otherwise*.
 
 
-
-## Getting Up-and-Running Locally
-
-
-### Developing on Ubuntu
+### Setting Things Up on Ubuntu<a name="setting-things-up-on-ubuntu"></a>
 
 1. Enter the shell.
 1. Install `pyenv` via [pyenv-installer](https://github.com/pyenv/pyenv-installer):
@@ -94,8 +103,25 @@ pytest --cov ./
 You should be good to go now.
 
 
+### Usage<a name="usage"></a>
 
-## Tips
+Use the project's CLI to interact with the script.
+
+Say, you want the `./tests/sources/HTML/index.html` file's comments removed. Given the project virtualenv is activated, from `./` invoke
+```shell
+$ python comments_remover.py ./tests/sources/HTML/input.html HTML ./
+``` 
+
+This will take `./tests/sources/HTML/input.html`, designated as `HTML` file, and put the copy of the former (with HTML-specific comments removed, obviously) to `./` named `rc.input.html`. The latter is the name of the original file prefixed with `rc.` by default. 
+
+To see full CLI specification, run 
+```shell
+$ python comments_remover.py
+```
+
+
+
+## Tips<a name="tips"></a>
 
 If you're not using [PyCharm](https://www.jetbrains.com/pycharm/) yet, make sure to at least consider this as an option. 
 Also check out [JetBrains Toolbox](https://www.jetbrains.com/toolbox/), a single tool to rule them all (the JetBrains products). 
