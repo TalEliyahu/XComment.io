@@ -12,9 +12,10 @@ Tested with the following configuration:
 ## Table of Contents
 
 * [Getting Up-and-Running Locally](#getting-up-and-running-locally)
+* []()
 
 
-## Getting Up-and-Running Locally<a name=""></a>
+## Getting Up-and-Running Locally<a name="getting-up-and-running-locally"></a>
 
 
 ### Developing on Ubuntu
