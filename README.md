@@ -1,12 +1,5 @@
 # comments_remover
 
-Tested with the following configuration:
-
-* Ubuntu 17;
-* Python 3.6.
-
-*Note: the below occurences of *`./`* refer to the project root unless explicitly stated otherwise*.
-
 
 
 ## Table of Contents
@@ -16,7 +9,16 @@ Tested with the following configuration:
     * [Usage](#usage)
 * [Tips](#tips)
 
+
+
 ## Getting Up-and-Running Locally<a name="getting-up-and-running-locally"></a>
+
+Tested with the following configuration:
+
+* Ubuntu 17;
+* Python 3.6.
+
+*Note: the below occurences of `./` refer to the project root unless explicitly stated otherwise*.
 
 
 ### Developing on Ubuntu<a name="developing-on-ubuntu"></a>
