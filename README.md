@@ -94,6 +94,23 @@ pytest --cov ./
 You should be good to go now.
 
 
+### Usage
+
+Use the project's CLI to interact with the script.
+
+Say, you want the `./tests/sources/HTML/index.html` file's comments removed. Given the project virtualenv is activated, from `./` invoke
+```shell
+$ python comments_remover.py ./tests/sources/HTML/input.html HTML ./
+``` 
+
+This will take `./tests/sources/HTML/input.html`, designated as `HTML` file, and put the copy of the former (with HTML-specific comments removed, obviously) to `./` named `rc.input.html`. The latter is the name of the original file prefixed with `rc.` by default. 
+
+To see full CLI specification, run 
+```shell
+$ python comments_remover.py
+```
+
+
 
 ## Tips
 
