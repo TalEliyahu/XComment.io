@@ -1,5 +1,8 @@
 import os
 import re
+import shutil
+import tempfile
+from pyunpack import Archive
 from argparse import ArgumentParser
 from enum import Enum, unique, auto
 from itertools import chain
@@ -142,6 +145,65 @@ LANGUAGE_COMMENTS_MAP: Dict[Language, Tuple[Sequence[str], Sequence[Tuple[str, s
 }
 
 
+def check_compressed(filepath):
+    """
+    Checks if a file is compressed using the file extension.
+
+    Parameters
+    ----------
+    filepath : string
+        Path to input file.
+
+    Returns
+    -------
+    boolean
+        True if compressed, False if not.
+    """
+
+    comp_ext = ['.zip', '.bz2', '.tar', '.7z', '.ace', '.rar', '.adf', '.alz',
+                '.cab', '.Z', '.cpio', '.deb', '.dms', '.gz', '.iso', '.lrz',
+                '.lha', '.lzh', '.lz', '.lzma', '.lzo', '.rpm', '.rz', '.shn',
+                '.xz', '.zoo']
+
+    if os.path.splitext(filepath)[1].lower() in comp_ext:
+        return True
+    else:
+        return False
+
+
+
+def unpack_file(path):
+    #using tmp dir with random name
+    dirpath = tempfile.mkdtemp(dir=os.path.dirname(path))
+    #check what archive exist
+    if os.path.isfile(path):
+    #check valid archive
+        if check_compressed(path):
+            Archive(path).extractall(dirpath)
+        else:
+            raise IOError ('%s file not valid archive' % path)
+    else:
+        raise IOError('%s file does not exist' % path)
+
+
+    resultpath = dirpath+"/"
+    resultpaths=[]
+    listd = os.listdir(resultpath)
+
+    if len(listd)>=1:
+        for i in listd:
+            resultpaths.append(os.path.abspath(resultpath+i))
+            print(i)
+    else:
+        raise IOError('Archive is empty')
+
+    #TODO: need add subdir processing
+    #return path to tmp(randomdir) and abs paths to each file
+
+    return dirpath, resultpaths
+    #shutil.rmtree(dirpath)
+
+
 def remove_comments_from_string(source: str,
                                 language: Language,
                                 orphan_multiline_comments: bool = True) -> str:
@@ -182,18 +244,34 @@ DEFAULT_OUTPUT_FILE_PREFIX: str = "rc."
 def remove_comments_from_file(input_file_path: str,
                               language: Language,
                               output_file_dir_path: Optional[str] = None,
-                              output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX) -> None:
-    input_file_contents = _read_file(input_file_path)
+                              output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,
+                              archived: bool = None ) -> None:
 
-    output_file_contents = remove_comments_from_string(input_file_contents, language)
 
-    input_file_name = _extract_file_name_with_extension(input_file_path)
+    input_file_paths=[]
+    dirpath=''
+    input_file_path_init = input_file_path
 
-    if output_file_dir_path is None:
-        output_file_dir_path = dirname(input_file_path)
-    output_file_path = join(output_file_dir_path,
-                            '{}{}'.format(output_file_prefix, input_file_name))
-    _create_or_update_file(output_file_path, output_file_contents)
+
+    if archived:
+        dirpath, input_file_paths = unpack_file(input_file_path)
+    else:
+        #create list with one element
+        input_file_paths.append(input_file_path)
+
+    for input_file_path in input_file_paths:
+        input_file_contents = _read_file(input_file_path)
+        output_file_contents = remove_comments_from_string(input_file_contents, language)
+        input_file_name = _extract_file_name_with_extension(input_file_path)
+        if output_file_dir_path is None:
+            output_file_dir_path = dirname(input_file_path_init)
+        output_file_path = join(output_file_dir_path,
+                                '{}{}'.format(output_file_prefix, input_file_name))
+        _create_or_update_file(output_file_path, output_file_contents)
+
+    #remove tmp dir
+    if archived:
+        shutil.rmtree(dirpath)
 
 
 def _read_file(file_path: str,
@@ -246,12 +324,18 @@ def main():
                                  default=DEFAULT_OUTPUT_FILE_PREFIX,
                                  nargs='?',
                                  help="""""")
+    argument_parser.add_argument('-a',
+                                 '--archived',
+                                 action='store_true',
+                                 help="""""")
+
     arguments = argument_parser.parse_args()
 
     remove_comments_from_file(realpath(arguments.input_file_path),
                               Language.get_from_string(arguments.language),
                               output_file_dir_path=arguments.output_file_dir_path,
-                              output_file_prefix=arguments.output_file_prefix)
+                              output_file_prefix=arguments.output_file_prefix,
+                              archived=arguments.archived)
 
 
 if __name__ == '__main__':
