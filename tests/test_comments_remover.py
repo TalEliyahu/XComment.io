@@ -1,5 +1,6 @@
 import re
-from os import makedirs
+import os
+from os import makedirs, remove
 from os.path import join, dirname
 from shutil import copy2
 
@@ -9,7 +10,8 @@ from pytest import mark
 
 from comments_remover import Language, remove_comments_from_string, remove_comments_from_file, \
     DEFAULT_OUTPUT_FILE_PREFIX, _read_file, _extract_file_name_with_extension
-from tests import get_input_and_output_source_file_paths, strip_spaces_and_linebreaks
+from tests import get_input_and_output_source_file_paths, \
+        strip_spaces_and_linebreaks, prepare_zipped_sources
 
 
 @mark.parametrize('language', Language)
@@ -26,15 +28,18 @@ def test_remove_comments_from_string(language: Language):
 
 @mark.parametrize('language', Language)
 @mark.parametrize('provide_output_file_dir_path', [True, False])
+@mark.parametrize('archived', [True, False])
 def test_remove_comments_from_file(tmpdir_factory,
                                    language: Language,
-                                   provide_output_file_dir_path: bool):
+                                   provide_output_file_dir_path: bool,
+                                   archived: bool):
     input_file_path, output_file_path = get_input_and_output_source_file_paths(language)
 
     tmp_language_sources_dir_path = join(tmpdir_factory.getbasetemp(),
                                          'sources',
                                          language.name)
     makedirs(tmp_language_sources_dir_path, exist_ok=True)
+
     if provide_output_file_dir_path:
         output_file_dir_path = tmp_language_sources_dir_path
     else:
@@ -47,12 +52,29 @@ def test_remove_comments_from_file(tmpdir_factory,
 
     output_file_prefix = DEFAULT_OUTPUT_FILE_PREFIX
 
+    input_file_path_init=''
+    #prepare archived sources
+    #save original file name with extension
+    if archived:
+        input_file_path_init=input_file_path
+        input_file_path=prepare_zipped_sources(input_file_path)
+
+
     remove_comments_from_file(input_file_path,
                               language,
                               output_file_dir_path=output_file_dir_path,
-                              output_file_prefix=output_file_prefix)
+                              output_file_prefix=output_file_prefix,
+                              archived=archived)
+    #remove archives
+    #come back source file name
+    if archived:
+        os.remove(input_file_path)
+        input_file_path=input_file_path_init
+
 
     input_file_name = _extract_file_name_with_extension(input_file_path)
+
+
     if provide_output_file_dir_path:
         actual_output_file_path = join(output_file_dir_path,
                                        '{}{}'.format(output_file_prefix, input_file_name))
