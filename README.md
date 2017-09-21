@@ -114,14 +114,31 @@ $ python comments_remover.py ./tests/sources/HTML/input.html HTML ./
 
 This will take `./tests/sources/HTML/input.html`, designated as `HTML` file, and put the copy of the former (with HTML-specific comments removed, obviously) to `./` named `rc.input.html`. The latter is the name of the original file prefixed with `rc.` by default. 
 
+
+#####Archives
+
 For processing archived sources use option -a
 
 Example:
 
 ```python comments_remover.py ./tmp/test.zip -a Python```
 
+#####Logging
+
+-l option enable logging (in stdout by default)
+
+-f < path > specify path to log file
+
+Example:
+
+``` shell 
+$ python comments_remover.py ./tmp/test.py -l -f ./remove.log Python 
+```
+
 
 To see full CLI specification, run 
+
+
 ```shell
 $ python comments_remover.py
 ```
