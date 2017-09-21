@@ -1,9 +1,10 @@
 import re
 import os
+import sys
+import logging
 from os import makedirs, remove
 from os.path import join, dirname
 from shutil import copy2
-
 from hypothesis import given
 from hypothesis import strategies as st
 from pytest import mark
@@ -13,32 +14,42 @@ from comments_remover import Language, remove_comments_from_string, remove_comme
 from tests import get_input_and_output_source_file_paths, \
         strip_spaces_and_linebreaks, prepare_zipped_sources
 
-
 @mark.parametrize('language', Language)
-def test_remove_comments_from_string(language: Language):
+def test_remove_comments_from_string(language: Language, capsys):
     input_file_path, output_file_path = get_input_and_output_source_file_paths(language)
 
     actual_output = remove_comments_from_string(_read_file(input_file_path), language)
+#    assert out.find("String processing")
 
     actual_output = strip_spaces_and_linebreaks(actual_output)
     expected_output = strip_spaces_and_linebreaks(_read_file(output_file_path))
 
     assert actual_output == expected_output
 
+#def test_logging_output(capsys):
+
+
 
 @mark.parametrize('language', Language)
 @mark.parametrize('provide_output_file_dir_path', [True, False])
 @mark.parametrize('archived', [True, False])
+@mark.parametrize('loggerc', [True, False])
 def test_remove_comments_from_file(tmpdir_factory,
                                    language: Language,
                                    provide_output_file_dir_path: bool,
-                                   archived: bool):
+                                   archived: bool,
+                                   loggerc: bool,
+                                   capsys):
     input_file_path, output_file_path = get_input_and_output_source_file_paths(language)
 
     tmp_language_sources_dir_path = join(tmpdir_factory.getbasetemp(),
                                          'sources',
                                          language.name)
     makedirs(tmp_language_sources_dir_path, exist_ok=True)
+
+    if loggerc:
+        logging.basicConfig(level=logging.DEBUG)
+
 
     if provide_output_file_dir_path:
         output_file_dir_path = tmp_language_sources_dir_path
@@ -67,6 +78,12 @@ def test_remove_comments_from_file(tmpdir_factory,
                               archived=archived)
     #remove archives
     #come back source file name
+
+    if loggerc:
+        out,err = capsys.readouterr()
+        assert out.find("DEBUG")
+        assert out.find("output file")
+
     if archived:
         os.remove(input_file_path)
         input_file_path=input_file_path_init

@@ -2,13 +2,13 @@ import os
 import re
 import shutil
 import tempfile
+import logging
 from pyunpack import Archive
 from argparse import ArgumentParser
 from enum import Enum, unique, auto
 from itertools import chain
 from os.path import join, dirname, realpath, basename
 from typing import Optional, Dict, Sequence, Tuple
-
 
 @unique
 class Language(Enum):
@@ -175,14 +175,18 @@ def check_compressed(filepath):
 def unpack_file(path):
     #using tmp dir with random name
     dirpath = tempfile.mkdtemp(dir=os.path.dirname(path))
+    logging.debug("Unpacked files placed to temp {} directory".format(dirpath))
     #check what archive exist
     if os.path.isfile(path):
     #check valid archive
         if check_compressed(path):
+            logging.debug("Check compressed: Ok. Processing extract files")
             Archive(path).extractall(dirpath)
         else:
+            logging.error('%s file not valid archive' % path)
             raise IOError ('%s file not valid archive' % path)
     else:
+        logging.error('%s file does not exist' % path)
         raise IOError('%s file does not exist' % path)
 
 
@@ -190,11 +194,14 @@ def unpack_file(path):
     resultpaths=[]
     listd = os.listdir(resultpath)
 
+    logging.debug("Files in archive :")
+
     if len(listd)>=1:
         for i in listd:
+            logging.debug(i)
             resultpaths.append(os.path.abspath(resultpath+i))
-            print(i)
     else:
+        logging.error('Archive is empty')
         raise IOError('Archive is empty')
 
     #TODO: need add subdir processing
@@ -208,6 +215,8 @@ def remove_comments_from_string(source: str,
                                 language: Language,
                                 orphan_multiline_comments: bool = True) -> str:
     pattern = r''
+    logging.debug('String processing')
+    logging.debug('Current language - {}'.format(language))
 
     quotations = {SINGLE_QUOTATION, DOUBLE_QUOTATION}
     singleline_comments, multiline_comments = LANGUAGE_COMMENTS_MAP[language]
@@ -255,22 +264,26 @@ def remove_comments_from_file(input_file_path: str,
 
     if archived:
         dirpath, input_file_paths = unpack_file(input_file_path)
+        logging.debug('Files archived and will be extracted')
     else:
         #create list with one element
         input_file_paths.append(input_file_path)
 
     for input_file_path in input_file_paths:
         input_file_contents = _read_file(input_file_path)
+        logging.debug('Reading and processing file {}'.format(input_file_path))
         output_file_contents = remove_comments_from_string(input_file_contents, language)
         input_file_name = _extract_file_name_with_extension(input_file_path)
         if output_file_dir_path is None:
             output_file_dir_path = dirname(input_file_path_init)
         output_file_path = join(output_file_dir_path,
                                 '{}{}'.format(output_file_prefix, input_file_name))
+        logging.debug('Write output file to {}'.format(output_file_path))
         _create_or_update_file(output_file_path, output_file_contents)
 
     #remove tmp dir
     if archived:
+        logging.debug('Clean temporary files and directory: {}'.format(dirpath))
         shutil.rmtree(dirpath)
 
 
@@ -329,13 +342,50 @@ def main():
                                  action='store_true',
                                  help="""""")
 
+    argument_parser.add_argument('-l',
+                                 '--log',
+                                 action='store_true',
+                                 help="Enable logging")
+
+    argument_parser.add_argument('-f',
+                                 '--log_file',
+                                 type=str,
+                                 default=None,
+                                 help="Specify path to log file")
+
+
     arguments = argument_parser.parse_args()
+
+    if arguments.log:
+        if arguments.log_file:
+            logging.basicConfig(filename=arguments.log_file, level=logging.DEBUG)
+        else:
+            logging.basicConfig(level=logging.DEBUG)
+            logging.debug("LOG File not specified, set to stdout")
+
+
+
+
+
+    logging.debug('Start processing with arguments : ')
+    logging.debug('Path to file :{}'.format(realpath(arguments.input_file_path)))
+    logging.debug('Language : {} '.format(arguments.language))
+    logging.debug('Output files dir  : {}'.format(arguments.output_file_dir_path))
+    logging.debug('Output files prefix : {}'.format(arguments.output_file_prefix))
+    logging.debug('File is archive : {}'.format(arguments.archived))
+    logging.debug('Path to logfile : {}'.format(arguments.log_file))
+
+
+
+
 
     remove_comments_from_file(realpath(arguments.input_file_path),
                               Language.get_from_string(arguments.language),
                               output_file_dir_path=arguments.output_file_dir_path,
                               output_file_prefix=arguments.output_file_prefix,
                               archived=arguments.archived)
+
+
 
 
 if __name__ == '__main__':
