@@ -1,5 +1,6 @@
 import re
 import os
+import logging
 from os import makedirs, remove
 from os.path import join, dirname
 from shutil import copy2, rmtree
@@ -33,9 +34,12 @@ def test_remove_comments_from_string(language: Language):
 @mark.parametrize('language', Language)
 @mark.parametrize('provide_output_file_dir_path', [True, False])
 @mark.parametrize('archived', [True, False])
+@mark.parametrize('loggerc', [True, False])
 def test_remove_comments_from_file(tmpdir_factory,
                                    language: Language,
                                    provide_output_file_dir_path: bool,
+                                   loggerc : bool,
+                                   capsys,
                                    archived: bool):
     input_file_path, output_file_path = get_input_and_output_source_file_paths(language)
 
@@ -56,6 +60,9 @@ def test_remove_comments_from_file(tmpdir_factory,
 
     output_file_prefix = DEFAULT_OUTPUT_FILE_PREFIX
 
+    if loggerc:
+        logging.basicConfig(level=logging.DEBUG)
+
     input_file_path_init=''
 
     remove_comments_from_file(input_file_path,
@@ -63,6 +70,11 @@ def test_remove_comments_from_file(tmpdir_factory,
                               output_file_dir_path=output_file_dir_path,
                               output_file_prefix=output_file_prefix,
                               archived=archived)
+
+    if loggerc:
+        out,err = capsys.readouterr()
+        assert out.find("DEBUG")
+        assert out.find("output file")
 
     input_file_name = _extract_file_name_with_extension(input_file_path)
 
@@ -84,7 +96,9 @@ def test_remove_comments_from_file(tmpdir_factory,
 @mark.parametrize('provide_output_file_dir_path', [True])
 @mark.parametrize('archived', [False])
 def test_remove_files_batch(provide_output_file_dir_path: bool,
-                            archived: False):
+                            archived: False,
+                            capsys):
+    logging.basicConfig(level=logging.DEBUG)
     input_directory = os.path.join(*MULTI_FILE)
     output_file_dir_path = input_directory
 
@@ -96,6 +110,7 @@ def test_remove_files_batch(provide_output_file_dir_path: bool,
                           output_file_dir_path=output_file_dir_path,
                           output_file_prefix=DEFAULT_OUTPUT_FILE_PREFIX,
                           archived=archived)
+
 
     result_counts_files = sum([len(files) for r, d, files in \
             os.walk(input_directory)])
