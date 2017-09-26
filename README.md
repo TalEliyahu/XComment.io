@@ -114,8 +114,12 @@ $ python comments_remover.py ./tests/sources/HTML/input.html HTML ./
 
 This will take `./tests/sources/HTML/input.html`, designated as `HTML` file, and put the copy of the former (with HTML-specific comments removed, obviously) to `./` named `rc.input.html`. The latter is the name of the original file prefixed with `rc.` by default. 
 
+#### Processing directories
 
-#####Archives
+If on start been specified directory path, script will be processing directory recursively with all subdirs for sources by specified language.
+
+
+#### Archives
 
 For processing archived sources use option -a
 
@@ -123,7 +127,7 @@ Example:
 
 ```python comments_remover.py ./tmp/test.zip -a Python```
 
-#####Logging
+#### Logging
 
 -l option enable logging (in stdout by default)
 

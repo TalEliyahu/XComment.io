@@ -1,14 +1,19 @@
 import os
 import re
+import sys
+import codecs
 import shutil
 import tempfile
 import logging
+import errno
+import subprocess
 from pyunpack import Archive
 from argparse import ArgumentParser
 from enum import Enum, unique, auto
 from itertools import chain
 from os.path import join, dirname, realpath, basename
 from typing import Optional, Dict, Sequence, Tuple
+
 
 @unique
 class Language(Enum):
@@ -145,6 +150,17 @@ LANGUAGE_COMMENTS_MAP: Dict[Language, Tuple[Sequence[str], Sequence[Tuple[str, s
 }
 
 
+
+def clean_results(path):
+    for root, dirs, files in os.walk(path):
+        for currentFile in files:
+            logging.debug("Processing file: " + currentFile)
+            if currentFile.lower().startswith("rc."):
+                os.remove(os.path.join(root, currentFile))
+
+
+
+
 def check_compressed(filepath):
     """
     Checks if a file is compressed using the file extension.
@@ -199,16 +215,18 @@ def unpack_file(path):
     if len(listd)>=1:
         for i in listd:
             logging.debug(i)
-            resultpaths.append(os.path.abspath(resultpath+i))
     else:
         logging.error('Archive is empty')
         raise IOError('Archive is empty')
 
-    #TODO: need add subdir processing
-    #return path to tmp(randomdir) and abs paths to each file
 
-    return dirpath, resultpaths
-    #shutil.rmtree(dirpath)
+    return dirpath
+
+def pack_back(upath, ipath):
+    ipath = re.sub(r'(.zip|.rar)$', '', ipath)
+    shutil.make_archive(ipath, 'zip', upath)
+
+
 
 
 def remove_comments_from_string(source: str,
@@ -256,35 +274,48 @@ def remove_comments_from_file(input_file_path: str,
                               output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,
                               archived: bool = None ) -> None:
 
-
-    input_file_paths=[]
-    dirpath=''
-    input_file_path_init = input_file_path
+    logging.debug("Result directory set to {}".format(output_file_dir_path))
 
 
-    if archived:
-        dirpath, input_file_paths = unpack_file(input_file_path)
-        logging.debug('Files archived and will be extracted')
-    else:
-        #create list with one element
-        input_file_paths.append(input_file_path)
+#    for input_file_path in input_file_paths:
+    input_file_contents = _read_file(os.path.abspath(input_file_path))
+    output_file_contents = remove_comments_from_string(input_file_contents, language)
+    input_file_name = _extract_file_name_with_extension(input_file_path)
+    if output_file_dir_path is None:
+        output_file_dir_path = dirname(input_file_path)
+    output_file_path = join(output_file_dir_path,
+                            '{}{}'.format(output_file_prefix, input_file_name))
+    logging.debug('Write output file to {}'.format(output_file_path))
 
-    for input_file_path in input_file_paths:
-        input_file_contents = _read_file(input_file_path)
-        logging.debug('Reading and processing file {}'.format(input_file_path))
-        output_file_contents = remove_comments_from_string(input_file_contents, language)
-        input_file_name = _extract_file_name_with_extension(input_file_path)
-        if output_file_dir_path is None:
-            output_file_dir_path = dirname(input_file_path_init)
-        output_file_path = join(output_file_dir_path,
-                                '{}{}'.format(output_file_prefix, input_file_name))
-        logging.debug('Write output file to {}'.format(output_file_path))
-        _create_or_update_file(output_file_path, output_file_contents)
+    _create_or_update_file(output_file_path, output_file_contents)
 
-    #remove tmp dir
-    if archived:
-        logging.debug('Clean temporary files and directory: {}'.format(dirpath))
-        shutil.rmtree(dirpath)
+
+def remove_comments_batch(dirpath: str,
+                          language: Language,
+                          output_file_dir_path: Optional[str] = None,
+                          output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,
+                          archived: bool = None ) -> None:
+
+    if output_file_dir_path is None:
+        output_file_dir_path = dirpath
+
+    logging.debug("Result directory set to {}".format(output_file_dir_path))
+
+
+    for paths, dirs, files in os.walk(dirpath):
+        for input_file_path in files:
+            input_file_abs=(os.path.join(os.path.abspath(paths),input_file_path))
+            logging.debug("Processing file : {} ".format(input_file_abs))
+
+            remove_comments_from_file(input_file_abs,
+                                      language,
+                                      output_file_dir_path=os.path.dirname(input_file_abs),
+                                      output_file_prefix=output_file_prefix,
+                                      archived=archived)
+
+
+
+
 
 
 def _read_file(file_path: str,
@@ -292,7 +323,7 @@ def _read_file(file_path: str,
     """Source:
     https://github.com/webyneter/python-humble-utils
     """
-    with open(file_path, 'r') as file:
+    with codecs.open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
         lines = []
         for line in file.readlines():
             if as_single_line:
@@ -341,7 +372,6 @@ def main():
                                  '--archived',
                                  action='store_true',
                                  help="""""")
-
     argument_parser.add_argument('-l',
                                  '--log',
                                  action='store_true',
@@ -352,6 +382,7 @@ def main():
                                  type=str,
                                  default=None,
                                  help="Specify path to log file")
+
 
 
     arguments = argument_parser.parse_args()
@@ -379,13 +410,36 @@ def main():
 
 
 
-    remove_comments_from_file(realpath(arguments.input_file_path),
+
+
+
+    if os.path.isdir(realpath(arguments.input_file_path)):
+        logging.debug("Directory processing")
+        remove_comments_batch(realpath(arguments.input_file_path),
                               Language.get_from_string(arguments.language),
                               output_file_dir_path=arguments.output_file_dir_path,
                               output_file_prefix=arguments.output_file_prefix,
                               archived=arguments.archived)
-
-
+    else:
+        if arguments.archived:
+            logging.debug("Archive processing")
+            unpackeddir=unpack_file(realpath(arguments.input_file_path))
+            remove_comments_batch(unpackeddir,
+                              Language.get_from_string(arguments.language),
+                              output_file_dir_path=None,
+                              output_file_prefix=arguments.output_file_prefix,
+                              archived=arguments.archived)
+            logging.debug("Archive will be packed again with changed sources")
+            pack_back(unpackeddir, realpath(arguments.input_file_path))
+            logging.debug("Remove temporary files: {}".format(unpackeddir))
+            shutil.rmtree(unpackeddir)
+        else:
+            logging.debug("Single file processing")
+            remove_comments_from_file(realpath(arguments.input_file_path),
+                                      Language.get_from_string(arguments.language),
+                                      output_file_dir_path=arguments.output_file_dir_path,
+                                      output_file_prefix=arguments.output_file_prefix,
+                                      archived=arguments.archived)
 
 
 if __name__ == '__main__':
