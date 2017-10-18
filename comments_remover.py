@@ -6,6 +6,7 @@ import shutil
 import tempfile
 import logging
 import errno
+import json
 import subprocess
 from pyunpack import Archive
 from argparse import ArgumentParser
@@ -150,6 +151,9 @@ LANGUAGE_COMMENTS_MAP: Dict[Language, Tuple[Sequence[str], Sequence[Tuple[str, s
 }
 
 
+
+def getListOfLangs():
+    return [lang.name for lang_name, lang in Language.__members__.items()]
 
 def clean_results(path):
     for root, dirs, files in os.walk(path):
@@ -368,6 +372,11 @@ def main():
                                  default=DEFAULT_OUTPUT_FILE_PREFIX,
                                  nargs='?',
                                  help="""""")
+    argument_parser.add_argument('-i',
+                                 '--language-list',
+                                 action='version',
+                                 version=json.dumps(getListOfLangs()))
+
     argument_parser.add_argument('-a',
                                  '--archived',
                                  action='store_true',
@@ -412,7 +421,9 @@ def main():
 
 
 
-
+    if arguments.language_list:
+        print(getListOfLangs())
+        sys.exit()
     if os.path.isdir(realpath(arguments.input_file_path)):
         logging.debug("Directory processing")
         remove_comments_batch(realpath(arguments.input_file_path),
