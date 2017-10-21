@@ -139,8 +139,23 @@ Example:
 $ python comments_remover.py ./tmp/test.py -l -f ./remove.log Python 
 ```
 
+#### Get supported language list
 
-To see full CLI specification, run 
+For get list supported languages use -i option.
+Result list will returned in json format
+
+
+```
+$ python comments_remover.py -i
+
+["PHP", "Python", "CSS", "HTML", "JavaScript", "ActionScript", "Ruby",
+"Assembly", "AppleScript", "Bash", "CSharp", "VB", "XML", "SQL", "C"]
+
+```
+
+
+
+#### To see full CLI specification, run 
 
 
 ```shell
