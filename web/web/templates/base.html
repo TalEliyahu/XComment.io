@@ -1,0 +1,57 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/javascript/javascript.js"></script>
+
+        <link rel="stylesheet" href='{% static "css/web.css" %}'>
+    </head>
+    <body>
+        <form method="POST" action="/"> {% csrf_token %}
+            <div class="editor">
+                <p>Original</p>
+                {{form.source_content}}
+            </div>
+            <div class="bridge">
+                <div class="bridge-content">
+                    <button type="submit" name="submit">
+                        Remove comments
+                    </button>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <select name="language">
+                        <option value="">Choose Language</option>
+                        <option value="HTML" selected>HTML</option>
+                        <option value="Python">Python</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <div class="editor">
+            <p>Cleaned Code</p>
+            {{form.results_content}}
+        </div>
+    </body>
+
+    <script>
+window.onload = function() {
+    let sourceEditor = document.getElementById('id_source_content');
+    let resultsEditor = document.getElementById('id_results_content');
+
+    let editors = [sourceEditor, resultsEditor];
+
+    for(let i=0; i < editors.length; i++) {
+        let editor = CodeMirror.fromTextArea(editors[i], {
+            mode: "javascript",
+            lineNumbers: true,
+            lineWrapping: true
+        });
+        editor.setSize(null, "100%");
+    }
+};
+    </script>
+</html>
