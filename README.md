@@ -54,12 +54,12 @@ Tested with the following configuration:
 1. Clone the project from GitHub:
     * either via SSH (the preferred way):
     ```shell
-    $ git clone git@github.com:Singapore-Tech-Entrepreneurs/comments_remover.git
+    $ git clone git@github.com:Singapore-Tech-Entrepreneurs/XComment.io.git
     ```
     ![Cloning the project from GitHub via SSH](./docs/images/git-clone-gitatgithub-com-singapore-tech-entrepreneurs-comments-remover-git.png)
     * or via HTTPS:
     ```shell
-    $ git clone https://github.com/Singapore-Tech-Entrepreneurs/comments_remover.git
+    $ git clone https://github.com/Singapore-Tech-Entrepreneurs/XComment.io.git
     ```
     ![Cloning the project from GitHub via SHTTPSSH](./docs/images/git-clone-https-github-com-singapore-tech-entrepreneurs-comments-remover-git.png)
 1. Switch to the project directory:
