@@ -374,6 +374,7 @@ def main():
                                  help="""""")
     argument_parser.add_argument('-i',
                                  '--language-list',
+                                 default=False,
                                  action='version',
                                  version=json.dumps(getListOfLangs()))
 
