@@ -4,12 +4,12 @@
     <head>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/javascript/javascript.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/{{ mode }}/{{ mode }}.js"></script>
 
         <link rel="stylesheet" href='{% static "css/web.css" %}'>
     </head>
     <body>
-        <form method="POST" action="/"> {% csrf_token %}
+        <form method="POST" action="/" name="form" novalidate> {% csrf_token %}
             <div class="editor">
                 <p>Original</p>
                 {{form.source_content}}
@@ -22,11 +22,8 @@
                     <br/>
                     <br/>
                     <br/>
-                    <select name="language">
-                        <option value="">Choose Language</option>
-                        <option value="HTML" selected>HTML</option>
-                        <option value="Python">Python</option>
-                    </select>
+                    <p><em>Select Language</em></p>
+                    {{form.language}}
                 </div>
             </div>
         </form>
@@ -41,12 +38,12 @@
 window.onload = function() {
     let sourceEditor = document.getElementById('id_source_content');
     let resultsEditor = document.getElementById('id_results_content');
-
     let editors = [sourceEditor, resultsEditor];
+    let mode = "{{mode}}";
 
     for(let i=0; i < editors.length; i++) {
         let editor = CodeMirror.fromTextArea(editors[i], {
-            mode: "javascript",
+            mode: mode,
             lineNumbers: true,
             lineWrapping: true
         });
