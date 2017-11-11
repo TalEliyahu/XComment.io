@@ -231,11 +231,8 @@ def pack_back(upath, ipath):
     shutil.make_archive(ipath, 'zip', upath)
 
 
-
-
-def remove_comments_from_string(source: str,
-                                language: Language,
-                                orphan_multiline_comments: bool = True) -> str:
+def construct_pattern(language: Language,
+                          orphan_multiline_comments: bool = True) -> str:
     pattern = r''
     logging.debug('String processing')
     logging.debug('Current language - {}'.format(language))
@@ -261,11 +258,29 @@ def remove_comments_from_string(source: str,
             comment_patterns.append(ending)
     comment_pattern = r'({})'.format(r'|'.join(comment_patterns))
     pattern += r'|{}'.format(comment_pattern)
+    return pattern
 
+
+def remove_comments_from_string(source: str,
+                                language: Language,
+                                orphan_multiline_comments: bool = True) -> str:
+
+    pattern = construct_pattern(language, orphan_multiline_comments)
     output = re \
         .compile(pattern, re.DOTALL | re.MULTILINE) \
         .sub(lambda match: "" if match.group(2) is not None else match.group(1), source)
+    return output
 
+
+def find_comments_from_string(source: str,
+                              language: Language,
+                              orphan_multiline_comments: bool = True) -> str:
+    pattern = construct_pattern(language, orphan_multiline_comments)
+    output = re \
+        .compile(pattern, re.DOTALL | re.MULTILINE) \
+        .finditer(source)
+
+    output = [m.group(2) for m in output if m.group(2) is not None]
     return output
 
 

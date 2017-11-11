@@ -4,7 +4,8 @@ from django.views import View
 from web.forms import EditorForm
 
 from web.comments_remover import (
-    Language, remove_comments_from_string, getListOfLangs)
+    Language, remove_comments_from_string, getListOfLangs,
+    find_comments_from_string)
 
 
 class WebView(View):
@@ -25,18 +26,35 @@ class WebView(View):
         mode = language.lower()
         return renamed[mode] if mode in renamed.keys() else mode
 
-    def get_context(self):
+    def get_context(self, action='remove'):
         language = self.default_language
         results_content = ''
+        highlight_content = []
+
         if self.form.is_valid():
             language = self.form.cleaned_data.get('language')
             lang = Language.get_from_string(language)
 
             source_content = self.form.cleaned_data.get('source_content')
-            results_content = (
-                remove_comments_from_string(
-                    source_content.replace('\r\n', '\n'),
-                    lang) if source_content else source_content)
+
+            processed_source_content = (
+                source_content.replace('\r\n', '\n')
+                if source_content else source_content
+            )
+
+
+            if processed_source_content:
+                if action == 'highlight':
+                    results_content = source_content
+                    highlight_content = find_comments_from_string(
+                        processed_source_content, lang)
+                else:
+                    results_content = (
+                        remove_comments_from_string(
+                            processed_source_content, lang)
+                    )
+            else:
+                results_content = source_content
 
             self.form = EditorForm({
                 'source_content': source_content,
@@ -45,7 +63,9 @@ class WebView(View):
 
         context = {
             'form': self.form,
-            'mode': self.get_code_mirror_mode(language)
+            'mode': self.get_code_mirror_mode(language),
+            'results_content': results_content,
+            'highlight_content': highlight_content
         }
         return context
 
@@ -54,8 +74,14 @@ class WebView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        action = None
+        if 'highlight' in request.POST:
+            action = 'highlight'
+        else:
+            action = 'remove'
+
         self.form = EditorForm(request.POST)
-        context = self.get_context()
+        context = self.get_context(action=action)
         response = render(request, self.template_name, context)
         response['X-XSS-Protection'] = 0 
         return response

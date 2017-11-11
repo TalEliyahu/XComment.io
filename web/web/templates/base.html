@@ -5,6 +5,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/{{ mode }}/{{ mode }}.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/search/searchcursor.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/selection/mark-selection.js"></script>
 
         <link rel="stylesheet" href='{% static "css/web.css" %}'>
     </head>
@@ -16,14 +18,20 @@
             </div>
             <div class="bridge">
                 <div class="bridge-content">
-                    <button type="submit" name="submit">
-                        Remove comments
+                    <p><em>Select Language</em></p>
+                    {{form.language}}
+                    <br/>
+                    <br/>
+                    <br/>
+                    <button type="submit" name="highlight">
+                        Highlight comments
                     </button>
                     <br/>
                     <br/>
                     <br/>
-                    <p><em>Select Language</em></p>
-                    {{form.language}}
+                    <button type="submit" name="remove">
+                        Remove comments
+                    </button>
                 </div>
             </div>
         </form>
@@ -36,19 +44,40 @@
 
     <script>
 window.onload = function() {
-    let sourceEditor = document.getElementById('id_source_content');
-    let resultsEditor = document.getElementById('id_results_content');
-    let editors = [sourceEditor, resultsEditor];
+    let source = document.getElementById('id_source_content');
+    let results = document.getElementById('id_results_content');
     let mode = "{{mode}}";
 
-    for(let i=0; i < editors.length; i++) {
-        let editor = CodeMirror.fromTextArea(editors[i], {
+    var makeEditor = function(textField) {
+        let editor = CodeMirror.fromTextArea(textField, {
             mode: mode,
             lineNumbers: true,
-            lineWrapping: true
+            lineWrapping: true,
+            styleSelectedText: true
         });
         editor.setSize(null, "100%");
+        return editor;
     }
-};
+
+    let sourceEditor = makeEditor(source);
+    sourceEditor.on('change', function() {
+        // highlight code here
+    });
+    let resultsEditor = makeEditor(results);
+
+    let cursor, searchTerm;
+
+    {% for each in highlight_content %}
+        searchTerm = `{{each}}`
+        cursor = resultsEditor.getSearchCursor();
+        while(cursor.findNext()) {
+            console.log(cursor.from(), cursor.to());
+            let from = cursor.from();
+            let to = cursor.to();
+            resultsEditor.markText(from, to, {className: "styled-background"});
+        }
+    {% endfor %}
+
+}
     </script>
 </html>
