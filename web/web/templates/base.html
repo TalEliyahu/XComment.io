@@ -68,8 +68,8 @@ window.onload = function() {
     let cursor, searchTerm;
 
     {% for each in highlight_content %}
-        searchTerm = `{{each}}`
-        cursor = resultsEditor.getSearchCursor();
+        searchTerm = "{{each | escapejs}}";
+        cursor = resultsEditor.getSearchCursor(searchTerm)
         while(cursor.findNext()) {
             console.log(cursor.from(), cursor.to());
             let from = cursor.from();
