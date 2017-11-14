@@ -48,7 +48,7 @@ window.onload = function() {
     let results = document.getElementById('id_results_content');
     let mode = "{{mode}}";
 
-    var makeEditor = function(textField) {
+    function makeEditor(textField) {
         let editor = CodeMirror.fromTextArea(textField, {
             mode: mode,
             lineNumbers: true,
@@ -59,10 +59,7 @@ window.onload = function() {
         return editor;
     }
 
-    let sourceEditor = makeEditor(source);
-    sourceEditor.on('change', function() {
-        // highlight code here
-    });
+    makeEditor(source);
     let resultsEditor = makeEditor(results);
 
     let cursor, searchTerm;
@@ -71,10 +68,8 @@ window.onload = function() {
         searchTerm = "{{each | escapejs}}";
         cursor = resultsEditor.getSearchCursor(searchTerm)
         while(cursor.findNext()) {
-            console.log(cursor.from(), cursor.to());
-            let from = cursor.from();
-            let to = cursor.to();
-            resultsEditor.markText(from, to, {className: "styled-background"});
+            resultsEditor.markText(
+                cursor.from(), cursor.to(), {className: "styled-background"});
         }
     {% endfor %}
 
