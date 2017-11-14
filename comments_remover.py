@@ -5,9 +5,6 @@ import codecs
 import shutil
 import tempfile
 import logging
-import errno
-import json
-import subprocess
 from pyunpack import Archive
 from argparse import ArgumentParser
 from enum import Enum, unique, auto
@@ -52,10 +49,13 @@ SEMICOLON_SINGLELINE_COMMENT: str = r';'
 APOSTROPHE_SINGLELINE_COMMENT: str = SINGLE_QUOTATION
 
 SLASH_STAR_MULTILINE_COMMENT: Tuple[str, str] = (r'/\*', r'\*/')
-ANGLEBRACKET_EXCLAMATIONMARK_MULTILINE_COMMENT: Tuple[str, str] = (r'<!--', r'-->')
-EQUALS_BEGIN_END_MULTILINE_COMMENT: Tuple[str, str] = (r'\=begin', r'\=end')
+ANGLEBRACKET_EXCLAMATIONMARK_MULTILINE_COMMENT: Tuple[str, str] = (
+    r'<!--', r'-->')
+EQUALS_BEGIN_END_MULTILINE_COMMENT: Tuple[str, str] = (
+    r'\=begin', r'\=end')
 
-LANGUAGE_COMMENTS_MAP: Dict[Language, Tuple[Sequence[str], Sequence[Tuple[str, str]]]] = {
+LANGUAGE_COMMENTS_MAP: Dict[
+        Language, Tuple[Sequence[str], Sequence[Tuple[str, str]]]] = {
     Language.PHP: (
         [
             DOUBLE_SLASH_SINGLELINE_COMMENT,
@@ -151,9 +151,9 @@ LANGUAGE_COMMENTS_MAP: Dict[Language, Tuple[Sequence[str], Sequence[Tuple[str, s
 }
 
 
-
 def getListOfLangs():
     return [lang.name for lang_name, lang in Language.__members__.items()]
+
 
 def clean_results(path):
     for root, dirs, files in os.walk(path):
@@ -161,8 +161,6 @@ def clean_results(path):
             logging.debug("Processing file: " + currentFile)
             if currentFile.lower().startswith("rc."):
                 os.remove(os.path.join(root, currentFile))
-
-
 
 
 def check_compressed(filepath):
@@ -191,40 +189,38 @@ def check_compressed(filepath):
         return False
 
 
-
 def unpack_file(path):
-    #using tmp dir with random name
+    # using tmp dir with random name
     dirpath = tempfile.mkdtemp(dir=os.path.dirname(path))
-    logging.debug("Unpacked files placed to temp {} directory".format(dirpath))
-    #check what archive exist
+    logging.debug(
+        "Unpacked files placed to temp {} directory".format(dirpath))
+    # check what archive exist
     if os.path.isfile(path):
-    #check valid archive
+        # check valid archive
         if check_compressed(path):
             logging.debug("Check compressed: Ok. Processing extract files")
             Archive(path).extractall(dirpath)
         else:
             logging.error('%s file not valid archive' % path)
-            raise IOError ('%s file not valid archive' % path)
+            raise IOError('%s file not valid archive' % path)
     else:
         logging.error('%s file does not exist' % path)
         raise IOError('%s file does not exist' % path)
 
-
-    resultpath = dirpath+"/"
-    resultpaths=[]
+    resultpath = dirpath + "/"
     listd = os.listdir(resultpath)
 
     logging.debug("Files in archive :")
 
-    if len(listd)>=1:
+    if len(listd) >= 1:
         for i in listd:
             logging.debug(i)
     else:
         logging.error('Archive is empty')
         raise IOError('Archive is empty')
 
-
     return dirpath
+
 
 def pack_back(upath, ipath):
     ipath = re.sub(r'(.zip|.rar)$', '', ipath)
@@ -232,7 +228,7 @@ def pack_back(upath, ipath):
 
 
 def construct_pattern(language: Language,
-                          orphan_multiline_comments: bool = True) -> str:
+                      orphan_multiline_comments: bool = True) -> str:
     pattern = r''
     logging.debug('String processing')
     logging.debug('Current language - {}'.format(language))
@@ -241,8 +237,10 @@ def construct_pattern(language: Language,
     singleline_comments, multiline_comments = LANGUAGE_COMMENTS_MAP[language]
     # Should any of the quotation marks happen to indicate comments,
     # that can serve as the former no more.
-    allowed_quotations = quotations.difference(chain(singleline_comments, multiline_comments))
-    allowed_quotation_patterns = {r'\{0}.*?\{0}'.format(q) for q in allowed_quotations}
+    allowed_quotations = quotations.difference(
+        chain(singleline_comments, multiline_comments))
+    allowed_quotation_patterns = {
+        r'\{0}.*?\{0}'.format(q) for q in allowed_quotations}
     quotation_pattern = r'({})'.format(r'|'.join(allowed_quotation_patterns))
     pattern += quotation_pattern
 
@@ -268,7 +266,7 @@ def remove_comments_from_string(source: str,
     pattern = construct_pattern(language, orphan_multiline_comments)
     output = re \
         .compile(pattern, re.DOTALL | re.MULTILINE) \
-        .sub(lambda match: "" if match.group(2) is not None else match.group(1), source)
+        .sub(lambda m: "" if m.group(2) is not None else m.group(1), source)
     return output
 
 
@@ -290,20 +288,21 @@ DEFAULT_OUTPUT_FILE_PREFIX: str = "rc."
 def remove_comments_from_file(input_file_path: str,
                               language: Language,
                               output_file_dir_path: Optional[str] = None,
-                              output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,
-                              archived: bool = None ) -> None:
+                              output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,  # noqa
+                              archived: bool = None) -> None:
 
     logging.debug("Result directory set to {}".format(output_file_dir_path))
 
-
-#    for input_file_path in input_file_paths:
+    # for input_file_path in input_file_paths:
     input_file_contents = _read_file(os.path.abspath(input_file_path))
-    output_file_contents = remove_comments_from_string(input_file_contents, language)
+    output_file_contents = remove_comments_from_string(
+        input_file_contents, language)
     input_file_name = _extract_file_name_with_extension(input_file_path)
     if output_file_dir_path is None:
         output_file_dir_path = dirname(input_file_path)
-    output_file_path = join(output_file_dir_path,
-                            '{}{}'.format(output_file_prefix, input_file_name))
+    output_file_path = join(
+        output_file_dir_path,
+        '{}{}'.format(output_file_prefix, input_file_name))
     logging.debug('Write output file to {}'.format(output_file_path))
 
     _create_or_update_file(output_file_path, output_file_contents)
@@ -312,29 +311,26 @@ def remove_comments_from_file(input_file_path: str,
 def remove_comments_batch(dirpath: str,
                           language: Language,
                           output_file_dir_path: Optional[str] = None,
-                          output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,
-                          archived: bool = None ) -> None:
+                          output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,  # noqa
+                          archived: bool = None) -> None:
 
     if output_file_dir_path is None:
         output_file_dir_path = dirpath
 
     logging.debug("Result directory set to {}".format(output_file_dir_path))
 
-
     for paths, dirs, files in os.walk(dirpath):
         for input_file_path in files:
-            input_file_abs=(os.path.join(os.path.abspath(paths),input_file_path))
+            input_file_abs = (
+                os.path.join(os.path.abspath(paths), input_file_path))
             logging.debug("Processing file : {} ".format(input_file_abs))
 
-            remove_comments_from_file(input_file_abs,
-                                      language,
-                                      output_file_dir_path=os.path.dirname(input_file_abs),
-                                      output_file_prefix=output_file_prefix,
-                                      archived=archived)
-
-
-
-
+            remove_comments_from_file(
+                input_file_abs,
+                language,
+                output_file_dir_path=os.path.dirname(input_file_abs),
+                output_file_prefix=output_file_prefix,
+                archived=archived)
 
 
 def _read_file(file_path: str,
@@ -342,7 +338,8 @@ def _read_file(file_path: str,
     """Source:
     https://github.com/webyneter/python-humble-utils
     """
-    with codecs.open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+    with codecs.open(
+            file_path, 'r', encoding='utf-8', errors='ignore') as file:
         lines = []
         for line in file.readlines():
             if as_single_line:
@@ -406,65 +403,60 @@ def main():
                                  default=None,
                                  help="Specify path to log file")
 
-
-
     arguments = argument_parser.parse_args()
 
     if arguments.log:
         if arguments.log_file:
-            logging.basicConfig(filename=arguments.log_file, level=logging.DEBUG)
+            logging.basicConfig(
+                filename=arguments.log_file, level=logging.DEBUG)
         else:
             logging.basicConfig(level=logging.DEBUG)
             logging.debug("LOG File not specified, set to stdout")
 
-
-
-
-
     logging.debug('Start processing with arguments : ')
-    logging.debug('Path to file :{}'.format(realpath(arguments.input_file_path)))
+    logging.debug('Path to file :{}'.format(
+        realpath(arguments.input_file_path)))
     logging.debug('Language : {} '.format(arguments.language))
-    logging.debug('Output files dir  : {}'.format(arguments.output_file_dir_path))
-    logging.debug('Output files prefix : {}'.format(arguments.output_file_prefix))
+    logging.debug('Output files dir  : {}'.format(
+        arguments.output_file_dir_path))
+    logging.debug('Output files prefix : {}'.format(
+        arguments.output_file_prefix))
     logging.debug('File is archive : {}'.format(arguments.archived))
     logging.debug('Path to logfile : {}'.format(arguments.log_file))
-
-
-
-
-
-
 
     if arguments.language_list:
         print(getListOfLangs())
         sys.exit()
     if os.path.isdir(realpath(arguments.input_file_path)):
         logging.debug("Directory processing")
-        remove_comments_batch(realpath(arguments.input_file_path),
-                              Language.get_from_string(arguments.language),
-                              output_file_dir_path=arguments.output_file_dir_path,
-                              output_file_prefix=arguments.output_file_prefix,
-                              archived=arguments.archived)
+        remove_comments_batch(
+            realpath(arguments.input_file_path),
+            Language.get_from_string(arguments.language),
+            output_file_dir_path=arguments.output_file_dir_path,
+            output_file_prefix=arguments.output_file_prefix,
+            archived=arguments.archived)
     else:
         if arguments.archived:
             logging.debug("Archive processing")
-            unpackeddir=unpack_file(realpath(arguments.input_file_path))
-            remove_comments_batch(unpackeddir,
-                              Language.get_from_string(arguments.language),
-                              output_file_dir_path=None,
-                              output_file_prefix=arguments.output_file_prefix,
-                              archived=arguments.archived)
+            unpackeddir = unpack_file(realpath(arguments.input_file_path))
+            remove_comments_batch(
+                unpackeddir,
+                Language.get_from_string(arguments.language),
+                output_file_dir_path=None,
+                output_file_prefix=arguments.output_file_prefix,
+                archived=arguments.archived)
             logging.debug("Archive will be packed again with changed sources")
             pack_back(unpackeddir, realpath(arguments.input_file_path))
             logging.debug("Remove temporary files: {}".format(unpackeddir))
             shutil.rmtree(unpackeddir)
         else:
             logging.debug("Single file processing")
-            remove_comments_from_file(realpath(arguments.input_file_path),
-                                      Language.get_from_string(arguments.language),
-                                      output_file_dir_path=arguments.output_file_dir_path,
-                                      output_file_prefix=arguments.output_file_prefix,
-                                      archived=arguments.archived)
+            remove_comments_from_file(
+                realpath(arguments.input_file_path),
+                Language.get_from_string(arguments.language),
+                output_file_dir_path=arguments.output_file_dir_path,
+                output_file_prefix=arguments.output_file_prefix,
+                archived=arguments.archived)
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@
 hypothesis==3.24.2
 
 pytest==3.2.1
+flake8==3.5.0
 
 coverage==4.4.1
 pytest-cov==2.5.1

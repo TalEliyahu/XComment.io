@@ -1,0 +1,2 @@
+[flake8]
+exclude = tests/sources,comment-napi,docs,jenkins,*.json,Profile,__pytest__,*.txt,*.md

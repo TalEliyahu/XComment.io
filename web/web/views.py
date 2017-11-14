@@ -4,12 +4,12 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views import View
 
+from web.forms import EditorForm
+
 sys.path.insert(0, settings.PROJECT_DIR)
 from comments_remover import (
-    Language, remove_comments_from_string, getListOfLangs,
-    find_comments_from_string)
-
-from web.forms import EditorForm
+    Language, remove_comments_from_string,
+    find_comments_from_string)  # noqa
 
 
 class WebView(View):
@@ -46,7 +46,6 @@ class WebView(View):
                 if source_content else source_content
             )
 
-
             if processed_source_content:
                 if action == 'highlight':
                     results_content = source_content
@@ -63,7 +62,7 @@ class WebView(View):
             self.form = EditorForm({
                 'source_content': source_content,
                 'results_content': results_content,
-                'language' : language})
+                'language': language})
 
         context = {
             'form': self.form,
@@ -87,5 +86,5 @@ class WebView(View):
         self.form = EditorForm(request.POST)
         context = self.get_context(action=action)
         response = render(request, self.template_name, context)
-        response['X-XSS-Protection'] = 0 
+        response['X-XSS-Protection'] = 0
         return response

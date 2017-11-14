@@ -4,7 +4,7 @@ from django import forms
 from django.conf import settings
 
 sys.path.insert(0, settings.PROJECT_DIR)
-from comments_remover import getListOfLangs
+from comments_remover import getListOfLangs  # noqa
 
 LANGUAGE_CHOICES = [
     (each, each) for each in getListOfLangs()]
