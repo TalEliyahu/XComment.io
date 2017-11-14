@@ -1,11 +1,15 @@
+import sys
+
+from django.conf import settings
 from django.shortcuts import render
 from django.views import View
 
-from web.forms import EditorForm
-
-from web.comments_remover import (
+sys.path.insert(0, settings.PROJECT_DIR)
+from comments_remover import (
     Language, remove_comments_from_string, getListOfLangs,
     find_comments_from_string)
+
+from web.forms import EditorForm
 
 
 class WebView(View):

@@ -1,6 +1,10 @@
-from django import forms
+import sys
 
-from web.comments_remover import getListOfLangs
+from django import forms
+from django.conf import settings
+
+sys.path.insert(0, settings.PROJECT_DIR)
+from comments_remover import getListOfLangs
 
 LANGUAGE_CHOICES = [
     (each, each) for each in getListOfLangs()]
