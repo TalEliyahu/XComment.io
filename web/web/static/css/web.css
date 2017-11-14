@@ -35,3 +35,12 @@ body {
 }
 
 .CodeMirror-selectedtext { color: white; }
+
+.github-buttons {
+    width: 100%;
+    overflow: hidden;
+}
+
+.github-buttons .buttons {
+    float: right;
+}

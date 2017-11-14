@@ -11,6 +11,12 @@
         <link rel="stylesheet" href='{% static "css/web.css" %}'>
     </head>
     <body>
+        <div class="github-buttons">
+            <div class="buttons">
+                <a class="github-button" href="https://github.com/Singapore-Tech-Entrepreneurs/XComment.io" data-icon="octicon-star" data-size="large" aria-label="Star Singapore-Tech-Entrepreneurs/XComment.io on GitHub">Star</a>
+                <a class="github-button" href="https://github.com/Singapore-Tech-Entrepreneurs/XComment.io/fork" data-icon="octicon-repo-forked" data-size="large" aria-label="Fork Singapore-Tech-Entrepreneurs/XComment.io on GitHub">Fork</a>
+            </div>
+        </div>
         <form method="POST" action="/" name="form" novalidate> {% csrf_token %}
             <div class="editor">
                 <p>Original</p>
@@ -40,39 +46,41 @@
             <p>Cleaned Code</p>
             {{form.results_content}}
         </div>
-    </body>
 
-    <script>
-window.onload = function() {
-    let source = document.getElementById('id_source_content');
-    let results = document.getElementById('id_results_content');
-    let mode = "{{mode}}";
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-    function makeEditor(textField) {
-        let editor = CodeMirror.fromTextArea(textField, {
-            mode: mode,
-            lineNumbers: true,
-            lineWrapping: true,
-            styleSelectedText: true
-        });
-        editor.setSize(null, "100%");
-        return editor;
-    }
+        <script>
+    window.onload = function() {
+        let source = document.getElementById('id_source_content');
+        let results = document.getElementById('id_results_content');
+        let mode = "{{mode}}";
 
-    makeEditor(source);
-    let resultsEditor = makeEditor(results);
-
-    let cursor, searchTerm;
-
-    {% for each in highlight_content %}
-        searchTerm = "{{each | escapejs}}";
-        cursor = resultsEditor.getSearchCursor(searchTerm)
-        while(cursor.findNext()) {
-            resultsEditor.markText(
-                cursor.from(), cursor.to(), {className: "styled-background"});
+        function makeEditor(textField) {
+            let editor = CodeMirror.fromTextArea(textField, {
+                mode: mode,
+                lineNumbers: true,
+                lineWrapping: true,
+                styleSelectedText: true
+            });
+            editor.setSize(null, "100%");
+            return editor;
         }
-    {% endfor %}
 
-}
-    </script>
+        makeEditor(source);
+        let resultsEditor = makeEditor(results);
+
+        let cursor, searchTerm;
+
+        {% for each in highlight_content %}
+            searchTerm = "{{each | escapejs}}";
+            cursor = resultsEditor.getSearchCursor(searchTerm)
+            while(cursor.findNext()) {
+                resultsEditor.markText(
+                    cursor.from(), cursor.to(), {className: "styled-background"});
+            }
+        {% endfor %}
+
+    }
+        </script>
+    </body>
 </html>
