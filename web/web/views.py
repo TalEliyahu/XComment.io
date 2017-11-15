@@ -4,7 +4,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views import View
 
-from web.forms import EditorForm
+from web.forms import EditorForm, LANGUAGE_CHOICES
 
 sys.path.insert(0, settings.PROJECT_DIR)
 from comments_remover import (
@@ -18,19 +18,27 @@ class WebView(View):
     default_mode = 'htmlmixed'
     default_language = 'JavaScript'
 
-    def get_code_mirror_mode(self, language):
+    def processed_language_choices(self, choices=None):
+        choices = choices or LANGUAGE_CHOICES
+        choices_dict = dict((k, v) for k, v in choices)
         renamed = {
+            'assembly': 'z80',
             'c': 'clike',
-            'html': 'javascript',
-            'actionscript': self.default_mode,
-            'applescript': self.default_mode,
-            'bash': self.default_mode,
-            'csharp': self.default_mode
+            'html': 'htmlmixed',
+            'actionscript': 'javascript',
+            'applescript': 'shell',
+            'bash': 'shell',
+            'csharp': 'clike'
         }
-        mode = language.lower()
-        return renamed[mode] if mode in renamed.keys() else mode
+        choices_dict.update(renamed)
+        return choices_dict
 
-    def get_context(self, action='remove'):
+    def get_code_mirror_mode(self, language):
+        mode = language.lower()
+        modes = self.processed_language_choices()
+        return modes[mode] if mode in modes.keys() else mode
+
+    def get_context(self):
         language = self.default_language
         results_content = ''
         highlight_content = []
@@ -47,15 +55,12 @@ class WebView(View):
             )
 
             if processed_source_content:
-                if action == 'highlight':
-                    results_content = source_content
-                    highlight_content = find_comments_from_string(
+                highlight_content = find_comments_from_string(
+                    processed_source_content, lang)
+                results_content = (
+                    remove_comments_from_string(
                         processed_source_content, lang)
-                else:
-                    results_content = (
-                        remove_comments_from_string(
-                            processed_source_content, lang)
-                    )
+                )
             else:
                 results_content = source_content
 
@@ -68,7 +73,8 @@ class WebView(View):
             'form': self.form,
             'mode': self.get_code_mirror_mode(language),
             'results_content': results_content,
-            'highlight_content': highlight_content
+            'highlight_content': highlight_content,
+            'language_choices':  self.processed_language_choices(LANGUAGE_CHOICES)
         }
         return context
 
@@ -77,14 +83,8 @@ class WebView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        action = None
-        if 'highlight' in request.POST:
-            action = 'highlight'
-        else:
-            action = 'remove'
-
         self.form = EditorForm(request.POST)
-        context = self.get_context(action=action)
+        context = self.get_context()
         response = render(request, self.template_name, context)
         response['X-XSS-Protection'] = 0
         return response
