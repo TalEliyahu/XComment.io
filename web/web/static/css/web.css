@@ -1,0 +1,46 @@
+body {
+    background-color: #f7f7f7;
+}
+.editor {
+    float: left;
+    width: 45%;
+    height: 800px;
+}
+
+.bridge {
+    float: left;
+    width: 10%;
+    margin-top: 50px;
+    word-wrap: break-word;
+}
+
+.bridge .bridge-content {
+    margin: auto;
+    width: 80%;
+    padding: 10px;
+}
+
+.bridge select {
+    width: 98%;
+}
+
+.CodeMirror { 
+    position: relative;
+    overflow: hidden;
+    background: white;
+}
+
+.styled-background {
+    background-color: #ff7;
+}
+
+.CodeMirror-selectedtext { color: white; }
+
+.github-buttons {
+    width: 100%;
+    overflow: hidden;
+}
+
+.github-buttons .buttons {
+    float: right;
+}
