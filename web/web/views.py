@@ -74,7 +74,8 @@ class WebView(View):
             'mode': self.get_code_mirror_mode(language),
             'results_content': results_content,
             'highlight_content': highlight_content,
-            'language_choices':  self.processed_language_choices(LANGUAGE_CHOICES)
+            'language_choices':  self.processed_language_choices(
+                LANGUAGE_CHOICES)
         }
         return context
 

@@ -9,6 +9,7 @@ from comments_remover import getListOfLangs  # noqa
 LANGUAGE_CHOICES = [
     (each.lower(), each.lower()) for each in getListOfLangs()]
 
+
 class EditorForm(forms.Form):
     source_content = forms.CharField(
         required=False,
