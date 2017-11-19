@@ -8,14 +8,14 @@ def read(fname):
 
 setup(
     name="XComment",
-    version="0.0.1",
+    version="0.0.2",
     author="Singapore-Tech-Entrepreneurs",
     author_email="tal@ste.sg",
     description="A script to remove comments from code.",
     keywords="code comments removal xcomment",
     url="http://packages.python.org/XComment",
     packages=find_packages(),
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
