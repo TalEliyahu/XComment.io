@@ -1,27 +1,126 @@
 # XComment
 
 
-
 ## Table of Contents
 
-* [Getting Up-and-Running Locally](#getting-up-and-running-locally)
-    * [Setting Things Up on Ubuntu](#setting-things-up-on-ubuntu)
-    * [Usage](#usage)
-* [Tips](#tips)
+* [XComment](#xcomment)
+  * [Table of Contents](#table-of-contents)
+  * [Installation<a name="user-content-installation"></a>](#installation)
+  * [Usage<a name="user-content-usage"></a>](#usage)
+     * [Processing files](#processing-files)
+     * [Processing directories](#processing-directories)
+     * [Archives](#archives)
+        * [Logging](#logging)
+     * [Get supported language list](#get-supported-language-list)
+     * [To see full CLI specification, run](#to-see-full-cli-specification-run)
+  * [Development<a name="user-content-development"></a>](#development)
+     * [Getting Up-and-Running Locally<a name="user-content-getting-up-and-running-locally"></a>](#getting-up-and-running-locally)
+        * [Setting Things Up on Ubuntu<a name="user-content-setting-things-up-on-ubuntu"></a>](#setting-things-up-on-ubuntu)
+     * [Deployment](#deployment)
+        * [Pip registry](#pip-registry)
+           * [Install dependencies](#install-dependencies)
+           * [Set pypi credentials](#set-pypi-credentials)
+           * [Create distribution](#create-distribution)
+           * [Upload](#upload)
+  * [Tips<a name="user-content-tips"></a>](#tips)
+
+## Installation<a name="installation">
+
+```shell
+$ pip install XComment
+```
+
+## Usage<a name="usage"></a>
+
+Use the project's CLI to interact with the script.
+
+### Processing files
+
+Say, you are working with the file `./tests/sources/HTML/index.html`.
+
+Precondition: virtualenv is activated (of course).
+
+To remove comments (output code without comments to output file) invoke
+
+```shell
+$ comments_remover ./tests/sources/HTML/input.html HTML ./
+```
+This will take `./tests/sources/HTML/input.html`, designated as `HTML` file, and put the copy of the former (with HTML-specific comments removed, obviously) to `./` named `rc.input.html`. The latter is the name of the original file prefixed with `rc.` by default.
+
+To highlight comments (outputs comments only to output file) invoke
+
+```shell
+$ comments_remover ./tests/sources/HTML/input.html HTML -p ./
+```
 
 
+### Processing directories
 
-## Getting Up-and-Running Locally<a name="getting-up-and-running-locally"></a>
+If on start been specified directory path, script will be processing directory recursively with all subdirs for sources by specified language.
+
+
+### Archives
+
+For processing archived sources use option -a
+
+Examples:
+
+```shell
+$ # remove comments
+$ comments_remover ./tmp/test.zip -a Python
+
+$ # highlight comments
+$ comments_remover ./tmp/test.zip -a -p Python
+```
+
+#### Logging
+
+-l option enable logging (in stdout by default)
+
+-f < path > specify path to log file
+
+Example:
+
+```shell
+$ comments_remover ./tmp/test.py -l -f ./remove.log Python
+```
+
+### Get supported language list
+
+For get list supported languages use -i option.
+Result list will returned in json format
+
+
+```shell
+$ comments_remover -i
+
+["PHP", "Python", "CSS", "HTML", "JavaScript", "ActionScript", "Ruby",
+"Assembly", "AppleScript", "Bash", "CSharp", "VB", "XML", "SQL", "C"]
+
+```
+
+### To see full CLI specification, run
+
+
+```shell
+$ comments_remover
+```
+
+
+## Development<a name="development"></a>
+
+
+### Getting Up-and-Running Locally<a name="getting-up-and-running-locally"></a>
 
 Tested with the following configuration:
 
-* Ubuntu 17.
+* Ubuntu 16.04 / 17
 * Python 3.6.
 
 *Note: the below occurences of `./` refer to the project root unless explicitly stated otherwise*.
 
 
-### Setting Things Up on Ubuntu<a name="setting-things-up-on-ubuntu"></a>
+#### Setting Things Up on Ubuntu<a name="setting-things-up-on-ubuntu"></a>
 
 1. Enter the shell.
 1. Install `pyenv` via [pyenv-installer](https://github.com/pyenv/pyenv-installer):
@@ -89,12 +188,14 @@ Tested with the following configuration:
     ![Installing [IPython](https://ipython.org/) interactive shell to speed up development](./docs/images/pip-install-ipython-6-1-0.png)
     
 To run tests, simply
+
 ```shell
 pytest ./
 ```
 ![Running tests](./docs/images/pytest.png)
 
 To also see coverage report,
+
 ```shell
 pytest --cov ./
 ```
@@ -102,64 +203,29 @@ pytest --cov ./
 
 You should be good to go now.
 
+### Deployment
 
-### Usage<a name="usage"></a>
+#### Pip registry
 
-Use the project's CLI to interact with the script.
-
-Say, you want the `./tests/sources/HTML/index.html` file's comments removed. Given the project virtualenv is activated, from `./` invoke
+##### Install dependencies
 ```shell
-$ python comments_remover.py ./tests/sources/HTML/input.html HTML ./
-``` 
-
-This will take `./tests/sources/HTML/input.html`, designated as `HTML` file, and put the copy of the former (with HTML-specific comments removed, obviously) to `./` named `rc.input.html`. The latter is the name of the original file prefixed with `rc.` by default. 
-
-#### Processing directories
-
-If on start been specified directory path, script will be processing directory recursively with all subdirs for sources by specified language.
-
-
-#### Archives
-
-For processing archived sources use option -a
-
-Example:
-
-```python comments_remover.py ./tmp/test.zip -a Python```
-
-#### Logging
-
--l option enable logging (in stdout by default)
-
--f < path > specify path to log file
-
-Example:
-
-``` shell 
-$ python comments_remover.py ./tmp/test.py -l -f ./remove.log Python 
+$ python install -r requirements-deploy.txt
 ```
 
-#### Get supported language list
-
-For get list supported languages use -i option.
-Result list will returned in json format
-
-
-```
-$ python comments_remover.py -i
-
-["PHP", "Python", "CSS", "HTML", "JavaScript", "ActionScript", "Ruby",
-"Assembly", "AppleScript", "Bash", "CSharp", "VB", "XML", "SQL", "C"]
-
-```
-
-
-
-#### To see full CLI specification, run 
-
-
+##### Set pypi credentials
 ```shell
-$ python comments_remover.py
+$ export TWINE_USERNAME=<pypi username>
+$ export TWINE_PASSWORD=<pypi password>
+```
+
+##### Create distribution
+```shell
+$ python setup.py sdist bdist_wheel
+```
+
+##### Upload
+```shell
+$ twine upload dist/XComment-x.y.z.tar.gz
 ```
 
 
