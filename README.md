@@ -7,6 +7,7 @@
 * [Getting Up-and-Running Locally](#getting-up-and-running-locally)
     * [Setting Things Up on Ubuntu](#setting-things-up-on-ubuntu)
     * [Usage](#usage)
+* [Development](#development)
 * [Tips](#tips)
 
 
@@ -160,6 +161,34 @@ $ python comments_remover.py -i
 
 ```shell
 $ python comments_remover.py
+```
+
+
+## Development<a name="development"></a>
+
+### Deployment
+
+#### Pip registry
+
+##### Install dependencies
+```shell
+$ python install -r requirements-deploy.txt
+```
+
+##### Set pypi credentials
+```shell
+$ export TWINE_USERNAME=<pypi username>
+$ export TWINE_PASSWORD=<pypi password>
+```
+
+##### Create distribution
+```shell
+$ python setup.py sdist bdist_wheel
+```
+
+##### Upload
+```shell
+$ twine upload dist/XComment-x.y.z.tar.gz
 ```
 
 
