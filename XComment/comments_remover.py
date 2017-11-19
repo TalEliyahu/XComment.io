@@ -10,7 +10,7 @@ from argparse import ArgumentParser
 from enum import Enum, unique, auto
 from itertools import chain
 from os.path import join, dirname, realpath, basename
-from typing import Optional, Dict, Sequence, Tuple
+from typing import Callable, Dict, Sequence, Tuple, Optional
 
 
 @unique
@@ -285,6 +285,21 @@ def find_comments_from_string(source: str,
 DEFAULT_OUTPUT_FILE_PREFIX: str = "rc."
 
 
+def _write_to_output_file(output_file_contents: str,
+                          input_file_path: str,
+                          output_file_dir_path: str,
+                          output_file_prefix: str) -> None:
+    input_file_name = _extract_file_name_with_extension(input_file_path)
+    if output_file_dir_path is None:
+        output_file_dir_path = dirname(input_file_path)
+    output_file_path = join(
+        output_file_dir_path,
+        '{}{}'.format(output_file_prefix, input_file_name))
+    logging.debug('Write output file to {}'.format(output_file_path))
+
+    _create_or_update_file(output_file_path, output_file_contents)
+
+
 def remove_comments_from_file(input_file_path: str,
                               language: Language,
                               output_file_dir_path: Optional[str] = None,
@@ -297,23 +312,35 @@ def remove_comments_from_file(input_file_path: str,
     input_file_contents = _read_file(os.path.abspath(input_file_path))
     output_file_contents = remove_comments_from_string(
         input_file_contents, language)
-    input_file_name = _extract_file_name_with_extension(input_file_path)
-    if output_file_dir_path is None:
-        output_file_dir_path = dirname(input_file_path)
-    output_file_path = join(
-        output_file_dir_path,
-        '{}{}'.format(output_file_prefix, input_file_name))
-    logging.debug('Write output file to {}'.format(output_file_path))
-
-    _create_or_update_file(output_file_path, output_file_contents)
+    _write_to_output_file(
+        output_file_contents, input_file_path, output_file_dir_path,
+        output_file_prefix)
 
 
-def remove_comments_batch(dirpath: str,
+def find_comments_in_file(input_file_path: str,
                           language: Language,
                           output_file_dir_path: Optional[str] = None,
                           output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,  # noqa
                           archived: bool = None) -> None:
 
+    logging.debug("Result directory set to {}".format(output_file_dir_path))
+
+    # for input_file_path in input_file_paths:
+    input_file_contents = _read_file(os.path.abspath(input_file_path))
+    comments = find_comments_from_string(input_file_contents, language)
+    output_file_contents = "\n".join(comments)
+    _write_to_output_file(
+        output_file_contents, input_file_path, output_file_dir_path,
+        output_file_prefix)
+
+
+def _process_batch(processor: Callable[
+                       [str, Language, str, str, bool], None],
+                   dirpath: str,
+                   language: Language,
+                   output_file_dir_path: str,
+                   output_file_prefix: str,
+                   archived) -> None:
     if output_file_dir_path is None:
         output_file_dir_path = dirpath
 
@@ -324,13 +351,42 @@ def remove_comments_batch(dirpath: str,
             input_file_abs = (
                 os.path.join(os.path.abspath(paths), input_file_path))
             logging.debug("Processing file : {} ".format(input_file_abs))
+            print(output_file_dir_path)
 
-            remove_comments_from_file(
+            processor(
                 input_file_abs,
                 language,
                 output_file_dir_path=os.path.dirname(input_file_abs),
                 output_file_prefix=output_file_prefix,
                 archived=archived)
+
+
+def remove_comments_batch(dirpath: str,
+                          language: Language,
+                          output_file_dir_path: Optional[str] = None,
+                          output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,  # noqa
+                          archived: bool = None) -> None:
+
+    _process_batch(remove_comments_from_file,
+                   dirpath,
+                   language,
+                   output_file_dir_path,
+                   output_file_prefix,
+                   archived)
+
+
+def find_comments_batch(dirpath: str,
+                        language: Language,
+                        output_file_dir_path: Optional[str] = None,
+                        output_file_prefix: str = DEFAULT_OUTPUT_FILE_PREFIX,  # noqa
+                        archived: bool = None) -> None:
+
+    _process_batch(find_comments_in_file,
+                   dirpath,
+                   language,
+                   output_file_dir_path,
+                   output_file_prefix,
+                   archived)
 
 
 def _read_file(file_path: str,
@@ -402,6 +458,10 @@ def main():
                                  type=str,
                                  default=None,
                                  help="Specify path to log file")
+    argument_parser.add_argument('-p',
+                                 '--parse-comments',
+                                 action='store_true',
+                                 help="Print out comments")
 
     arguments = argument_parser.parse_args()
 
@@ -451,9 +511,20 @@ def main():
             shutil.rmtree(unpackeddir)
         else:
             logging.debug("Single file processing")
+            language = Language.get_from_string(arguments.language)
+            input_file_path = realpath(arguments.input_file_path)
+            if arguments.parse_comments:
+                logging.debug("Printing comments only")
+                find_comments_in_file(
+                    input_file_path,
+                    language,
+                    output_file_dir_path=arguments.output_file_dir_path,
+                    output_file_prefix=arguments.output_file_prefix,
+                    archived=arguments.archived)
+                sys.exit()
             remove_comments_from_file(
-                realpath(arguments.input_file_path),
-                Language.get_from_string(arguments.language),
+                input_file_path,
+                language,
                 output_file_dir_path=arguments.output_file_dir_path,
                 output_file_prefix=arguments.output_file_prefix,
                 archived=arguments.archived)

@@ -8,7 +8,7 @@ from hypothesis import given
 from hypothesis import strategies as st
 from pytest import mark
 
-from comments_remover import (
+from XComment.comments_remover import (
     Language, remove_comments_from_string, remove_comments_from_file,
     DEFAULT_OUTPUT_FILE_PREFIX, _read_file, _extract_file_name_with_extension,
     clean_results, remove_comments_batch, pack_back,

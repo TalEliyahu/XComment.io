@@ -4,7 +4,7 @@ from os.path import dirname, realpath, join, basename
 from zipfile import ZipFile
 from typing import Tuple
 
-from comments_remover import Language
+from XComment.comments_remover import Language
 
 
 def get_input_and_output_source_file_paths(language: Language) -> Tuple[str, str]:  # noqa
