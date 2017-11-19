@@ -26,9 +26,6 @@ setup(
         'comments_remover'
     ],
     install_requires=[
-        'Django==1.11.7',
         'pyunpack==0.1.2',
-        'gunicorn==19.7.1',
-        'whitenoise==3.3.1'
     ]
 )
