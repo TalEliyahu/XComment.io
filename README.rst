@@ -298,3 +298,7 @@ Tips
 If you're not using [PyCharm](https://www.jetbrains.com/pycharm/) yet, make sure to at least consider this as an option. 
 Also check out [JetBrains Toolbox](https://www.jetbrains.com/toolbox/), a single tool to rule them all (the JetBrains products). 
 To stay up-to-date, follow [PyCharm Blog](https://blog.jetbrains.com/pycharm/). 
+
+## Contributors
+
+Design by Filip Todorov @ www.filiptodorov.com
